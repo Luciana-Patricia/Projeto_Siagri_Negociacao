@@ -2,13 +2,13 @@ object IWFrame2: TIWFrame2
   Left = 0
   Top = 0
   Width = 423
-  Height = 72
+  Height = 74
   TabOrder = 0
   object IWFrameRegion: TIWRegion
     Left = 0
     Top = 0
     Width = 423
-    Height = 72
+    Height = 74
     Cursor = crAuto
     RenderInvisibleControls = False
     TabOrder = 0
@@ -22,6 +22,7 @@ object IWFrame2: TIWFrame2
     ShowHint = True
     ZIndex = 1000
     Splitter = False
+    ExplicitHeight = 73
     object spbCodigo: TSpeedButton
       Left = 79
       Top = 32

@@ -2,8 +2,8 @@ object FRM_Produtor: TFRM_Produtor
   Left = 0
   Top = 0
   Caption = 'Cadastro Produtor'
-  ClientHeight = 201
-  ClientWidth = 447
+  ClientHeight = 252
+  ClientWidth = 439
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,16 +11,18 @@ object FRM_Produtor: TFRM_Produtor
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 447
+    Width = 439
     Height = 35
     Align = alTop
     TabOrder = 0
+    ExplicitWidth = 447
     object spbNovo: TSpeedButton
       Left = 1
       Top = 1
@@ -302,82 +304,15 @@ object FRM_Produtor: TFRM_Produtor
       ExplicitHeight = 35
     end
   end
-  object Panel2: TPanel
-    Left = 0
-    Top = 35
-    Width = 447
-    Height = 131
-    Align = alClient
-    TabOrder = 1
-    ExplicitLeft = 104
-    ExplicitTop = 152
-    ExplicitWidth = 185
-    ExplicitHeight = 41
-    object Label1: TLabel
-      Left = 5
-      Top = 16
-      Width = 33
-      Height = 13
-      Caption = 'C'#243'digo'
-    end
-    object lblCPFCNPJ: TLabel
-      Left = 296
-      Top = 16
-      Width = 19
-      Height = 13
-      Caption = 'CPF'
-    end
-    object Label2: TLabel
-      Left = 5
-      Top = 64
-      Width = 27
-      Height = 13
-      Caption = 'Nome'
-    end
-    object edtCodigo: TEdit
-      Left = 5
-      Top = 35
-      Width = 121
-      Height = 21
-      TabOrder = 0
-    end
-    object edtCPFCNPJ: TEdit
-      Left = 295
-      Top = 35
-      Width = 121
-      Height = 21
-      TabOrder = 1
-    end
-    object rgTipoProdutor: TRadioGroup
-      Left = 132
-      Top = 19
-      Width = 157
-      Height = 37
-      Caption = 'Pessoa'
-      Columns = 2
-      ItemIndex = 0
-      Items.Strings = (
-        'F'#237'sica'
-        'Jur'#237'dica')
-      TabOrder = 2
-      OnClick = rgTipoProdutorClick
-    end
-    object edtNome: TEdit
-      Left = 5
-      Top = 83
-      Width = 411
-      Height = 21
-      TabOrder = 3
-    end
-  end
   object Panel3: TPanel
     Left = 0
-    Top = 166
-    Width = 447
+    Top = 217
+    Width = 439
     Height = 35
     Align = alBottom
-    TabOrder = 2
-    ExplicitTop = 160
+    TabOrder = 1
+    ExplicitTop = 166
+    ExplicitWidth = 447
     object spbSalvar: TSpeedButton
       Left = 71
       Top = 1
@@ -415,7 +350,7 @@ object FRM_Produtor: TFRM_Produtor
       ExplicitHeight = 30
     end
     object spbSair: TSpeedButton
-      Left = 376
+      Left = 368
       Top = 1
       Width = 70
       Height = 33
@@ -435,5 +370,115 @@ object FRM_Produtor: TFRM_Produtor
       ExplicitTop = 6
       ExplicitHeight = 30
     end
+  end
+  object tbControl: TTabControl
+    Left = 0
+    Top = 35
+    Width = 439
+    Height = 182
+    Align = alClient
+    MultiSelect = True
+    TabOrder = 2
+    Tabs.Strings = (
+      'Dados produtor'
+      'Limites de cr'#233'dito')
+    TabIndex = 0
+    object pnlDados: TPanel
+      Left = 4
+      Top = 24
+      Width = 431
+      Height = 154
+      Align = alClient
+      TabOrder = 0
+      ExplicitLeft = -158
+      ExplicitTop = 35
+      ExplicitWidth = 447
+      ExplicitHeight = 131
+      object Label1: TLabel
+        Left = 5
+        Top = 16
+        Width = 33
+        Height = 13
+        Caption = 'C'#243'digo'
+      end
+      object lblCPFCNPJ: TLabel
+        Left = 296
+        Top = 16
+        Width = 19
+        Height = 13
+        Caption = 'CPF'
+      end
+      object Label2: TLabel
+        Left = 5
+        Top = 64
+        Width = 27
+        Height = 13
+        Caption = 'Nome'
+      end
+      object edtCodigo: TEdit
+        Left = 5
+        Top = 35
+        Width = 121
+        Height = 21
+        Enabled = False
+        TabOrder = 0
+      end
+      object edtCPFCNPJ: TEdit
+        Left = 295
+        Top = 35
+        Width = 121
+        Height = 21
+        TabOrder = 1
+        OnExit = edtCPFCNPJExit
+        OnKeyPress = edtCPFCNPJKeyPress
+      end
+      object rgTipoProdutor: TRadioGroup
+        Left = 132
+        Top = 19
+        Width = 157
+        Height = 37
+        Caption = 'Pessoa'
+        Columns = 2
+        ItemIndex = 0
+        Items.Strings = (
+          'F'#237'sica'
+          'Jur'#237'dica')
+        TabOrder = 2
+        OnClick = rgTipoProdutorClick
+      end
+      object edtNome: TEdit
+        Left = 5
+        Top = 83
+        Width = 411
+        Height = 21
+        TabOrder = 3
+      end
+    end
+  end
+  object cdsProdutor: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    ProviderName = 'dspProdutor'
+    Left = 248
+    Top = 3
+    object cdsProdutorPROR_CODIGO: TIntegerField
+      FieldName = 'PROR_CODIGO'
+      Required = True
+    end
+    object cdsProdutorPROR_CPF_CNPJ: TStringField
+      FieldName = 'PROR_CPF_CNPJ'
+      Size = 14
+    end
+    object cdsProdutorPROR_NOME: TStringField
+      FieldName = 'PROR_NOME'
+      Size = 150
+    end
+    object cdsProdutorPROR_DATA_CADASTRO: TDateField
+      FieldName = 'PROR_DATA_CADASTRO'
+    end
+  end
+  object dspProdutor: TDataSetProvider
+    DataSet = DM_PRINCIPAL.sqlProdutor
+    Left = 184
   end
 end

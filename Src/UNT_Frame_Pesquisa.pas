@@ -5,7 +5,8 @@ interface
 uses
   SysUtils, Classes, Controls, Forms,
   IWVCLBaseContainer, IWColor, IWContainer, IWRegion, Vcl.StdCtrls, Vcl.Buttons,
-  IWHTMLContainer, IWHTML40Container;
+  IWHTMLContainer, IWHTML40Container, Data.FMTBcd, Data.DB, Data.SqlExpr,
+  Vcl.ExtCtrls;
 
 type
   TIWFrame2 = class(TFrame)
@@ -19,11 +20,15 @@ type
   private
     { Private declarations }
   public
-    { Public declarations }
+
   end;
 
 implementation
 
 {$R *.dfm}
+
+uses UNT_DM_Principal;
+
+{ TIWFrame2 }
 
 end.

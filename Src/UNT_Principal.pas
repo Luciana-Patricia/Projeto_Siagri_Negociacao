@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ComCtrls, Vcl.ExtCtrls,
+  Vcl.Imaging.pngimage;
 
 type
   Tfrm_Principal = class(TForm)
@@ -15,9 +16,14 @@ type
     Distribuidor1: TMenuItem;
     Produto1: TMenuItem;
     Negociao1: TMenuItem;
+    Image1: TImage;
+    StatusBarPrincipal: TStatusBar;
+    Timer1: TTimer;
     procedure Produtor1Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
+
   public
     { Public declarations }
   end;
@@ -29,7 +35,14 @@ implementation
 
 {$R *.dfm}
 
-uses UNT_Produtor;
+uses UNT_Produtor, UNT_DM_Principal;
+
+
+procedure Tfrm_Principal.FormShow(Sender: TObject);
+begin
+  if not DM_PRINCIPAL.Conexao.Connected then
+    DM_PRINCIPAL.Conexao.Connected := True;
+end;
 
 procedure Tfrm_Principal.Produtor1Click(Sender: TObject);
 begin
@@ -37,6 +50,11 @@ begin
     Application.CreateForm(TFRM_Produtor,FRM_Produtor);
   FRM_Produtor.ShowModal;
 
+end;
+
+procedure Tfrm_Principal.Timer1Timer(Sender: TObject);
+begin
+  StatusBarPrincipal.Panels[0].Text := FormatDateTime('DD/MM/YYYY hh:mm:ss', Now);
 end;
 
 end.

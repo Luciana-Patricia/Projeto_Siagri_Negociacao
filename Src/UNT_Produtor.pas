@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons,
   Datasnap.Provider, Data.DB, Datasnap.DBClient, UNT_Frame_Pesquisa,Data.SqlExpr,
-  Vcl.ComCtrls;
+  Vcl.ComCtrls, Vcl.Tabs, Vcl.Mask, Vcl.Grids, Vcl.DBGrids;
 
 type
   TFRM_Produtor = class(TForm)
@@ -25,7 +25,9 @@ type
     cdsProdutorPROR_CPF_CNPJ: TStringField;
     cdsProdutorPROR_NOME: TStringField;
     cdsProdutorPROR_DATA_CADASTRO: TDateField;
-    tbControl: TTabControl;
+    PageControl1: TPageControl;
+    tsDados: TTabSheet;
+    tsLimite: TTabSheet;
     pnlDados: TPanel;
     Label1: TLabel;
     lblCPFCNPJ: TLabel;
@@ -34,6 +36,28 @@ type
     edtCPFCNPJ: TEdit;
     rgTipoProdutor: TRadioGroup;
     edtNome: TEdit;
+    Panel2: TPanel;
+    Label3: TLabel;
+    edtCodDistribuidor: TEdit;
+    spbCodigo: TSpeedButton;
+    lblNomeDist: TLabel;
+    edtNomeDistribuidor: TEdit;
+    Label4: TLabel;
+    medtLimite: TMaskEdit;
+    spIncluirLimite: TSpeedButton;
+    spbDeletarLimite: TSpeedButton;
+    dbgridLimite: TDBGrid;
+    dsLimite: TDataSource;
+    cdsLimite: TClientDataSet;
+    dspLimite: TDataSetProvider;
+    cdsLimiteLICR_CODIGO: TIntegerField;
+    cdsLimiteDIST_CNPJ: TStringField;
+    cdsLimiteDIST_NOME: TStringField;
+    cdsLimiteDIST_CODIGO: TIntegerField;
+    cdsLimitePROR_CODIGO: TIntegerField;
+    cdsLimiteLICR_VALOR_LIMITE: TFMTBCDField;
+    edtCodLimite: TEdit;
+    edtLimite: TEdit;
     procedure rgTipoProdutorClick(Sender: TObject);
     procedure spbNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -45,6 +69,11 @@ type
     procedure spbSairClick(Sender: TObject);
     procedure edtCPFCNPJKeyPress(Sender: TObject; var Key: Char);
     procedure edtCPFCNPJExit(Sender: TObject);
+    procedure spIncluirLimiteClick(Sender: TObject);
+    procedure spbDeletarLimiteClick(Sender: TObject);
+    procedure dbgridLimiteDblClick(Sender: TObject);
+    procedure spbCodigoClick(Sender: TObject);
+    procedure edtLimiteKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     bEditar : Boolean;
@@ -82,26 +111,84 @@ begin
   edtCPFCNPJ.Text := cdsProdutorPROR_CPF_CNPJ.AsString;
   edtNome.Text := cdsProdutorPROR_NOME.AsString;
 
+  {Carrega limite de credito}
+  cdsLimite.Close;
+  DM_PRINCIPAL.sqlLimite.Close;
+  DM_PRINCIPAL.sqlLimite.SQL.Clear;
+  DM_PRINCIPAL.sqlLimite.SQL.Text :=
+    'SELECT                     ' + sLineBreak +
+    '    LC.LICR_CODIGO,        ' + sLineBreak +
+    '    LC.DIST_CODIGO,        ' + sLineBreak +
+    '    LC.PROR_CODIGO,        ' + sLineBreak +
+    '    LC.LICR_VALOR_LIMITE,  ' + sLineBreak +
+    '    D.DIST_CNPJ,           ' + sLineBreak +
+    '    D.DIST_NOME            ' + sLineBreak +
+    'FROM                       ' + sLineBreak +
+    '    PSCN_LIMITE_CREDITO LC ' + sLineBreak +
+    '        INNER JOIN PSCN_PRODUTOR R              '+ sLineBreak +
+    '            ON LC.PROR_CODIGO = R.PROR_CODIGO   '+ sLineBreak +
+    '        INNER JOIN PSCN_DISTRIBUIDOR D          '+ sLineBreak +
+    '            ON LC.DIST_CODIGO = D.DIST_CODIGO   '+ sLineBreak +
+    'WHERE                                           '+ sLineBreak +
+    '    LC.LICR_CODIGO = ' + edtCodigo.Text;
+  DM_PRINCIPAL.sqlLimite.Open;
+  cdsLimite.Active := True;
+  PageControl1.ActivePage := tsDados;
+
+end;
+
+procedure TFRM_Produtor.dbgridLimiteDblClick(Sender: TObject);
+begin
+  if cdsLimite.Active then
+  begin
+    if cdsLimiteLICR_CODIGO.Value > 0  then
+    begin
+      edtCodLimite.Text        := cdsLimiteLICR_CODIGO.AsString;
+      edtCodDistribuidor.Text  := cdsLimiteDIST_CODIGO.AsString;
+      edtNomeDistribuidor.Text := cdsLimiteDIST_NOME.AsString;
+      medtLimite.Text          := cdsLimiteLICR_VALOR_LIMITE.AsString;
+    end;
+  end;
 end;
 
 procedure TFRM_Produtor.edtCPFCNPJExit(Sender: TObject);
 begin
   if rgTipoProdutor.ItemIndex < 0 then
-  begin
-    MessageDlg('Escolha o tipo de pessoa', mtWarning,[mbOK],0);
     rgTipoProdutor.ItemIndex := 0;
-    exit;
+
+  if Trim(edtCPFCNPJ.Text) <> '' then
+  begin
+    if rgTipoProdutor.ItemIndex = 0 then
+    begin
+      if not DM_PRINCIPAL.ValidaCPF(edtCPFCNPJ.Text) then
+      begin
+        MessageDlg('CPF inválido.',mtError, [mbOK],0);
+        edtCPFCNPJ.SetFocus;
+      end
+    end
+    else
+    begin
+      if not DM_PRINCIPAL.ValidaCNPJ(edtCPFCNPJ.Text) then
+      begin
+        MessageDlg('CNPJ inválido.',mtError, [mbOK],0);
+        edtCPFCNPJ.SetFocus;
+      end
+    end
   end;
-  if rgTipoProdutor.ItemIndex = 0 then
-    DM_PRINCIPAL.ValidaCPF(edtCPFCNPJ.Text)
-  else
-    DM_PRINCIPAL.ValidaCNPJ(edtCPFCNPJ.Text);
+
 end;
 
 procedure TFRM_Produtor.edtCPFCNPJKeyPress(Sender: TObject; var Key: Char);
 begin
   if not (key in ['0'..'9', #8, #13]) then
     key := #0;
+end;
+
+procedure TFRM_Produtor.edtLimiteKeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (key in ['0'..'9', ',',#8, #13]) then
+    key := #0;
+
 end;
 
 procedure TFRM_Produtor.FormShow(Sender: TObject);
@@ -115,6 +202,8 @@ begin
   spbSair.Enabled      := True;
   bEditar              := False;
   pnlDados.Enabled     := False;
+  tsLimite.Visible     := False;
+  PageControl1.ActivePage := tsDados;
   LimparDados;
 end;
 
@@ -124,6 +213,7 @@ begin
   edtCPFCNPJ.Clear;
   edtNome.Clear;
   rgTipoProdutor.ItemIndex := -1;
+  PageControl1.ActivePage := tsDados;
 end;
 
 procedure TFRM_Produtor.rgTipoProdutorClick(Sender: TObject);
@@ -152,7 +242,28 @@ begin
   spbSair.Enabled      := True;
   bEditar              := False;
   pnlDados.Enabled     := False;
+  tsLimite.Visible     := False;
   LimparDados;
+end;
+
+procedure TFRM_Produtor.spbCodigoClick(Sender: TObject);
+begin
+  FRM_Pesquisa.PesquisaGeral('L');
+  FRM_Pesquisa.ShowModal;
+  if FRM_Pesquisa.Tag = 1 then
+  begin
+    if not (FRM_Pesquisa.cdsPesquisa.IsEmpty) then
+      edtCodDistribuidor.Text  := FRM_Pesquisa.cdsPesquisa.FieldByName('Codigo').AsString;
+      edtNomeDistribuidor.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('Nome').AsString;
+  end;
+end;
+
+procedure TFRM_Produtor.spbDeletarLimiteClick(Sender: TObject);
+begin
+  if edtCodDistribuidor.Text = '' then
+    exit;
+  if cdsLimiteLICR_CODIGO.Value > 0 then
+    cdsLimite.Delete;
 end;
 
 procedure TFRM_Produtor.spbEditarClick(Sender: TObject);
@@ -166,12 +277,24 @@ begin
   spbSair.Enabled      := False;
   bEditar              := True;
   pnlDados.Enabled     := True;
+  tsLimite.Visible     := True;
+  PageControl1.ActivePage := tsDados;
 end;
 
 procedure TFRM_Produtor.spbExcluirClick(Sender: TObject);
 begin
   if MessageDlg('Tem certeza que deseja excluir o produtor ' + edtNome.Text + '?',mtWarning,[mbYes, mbNo],0) = mrYes then
   begin
+    if cdsLimite.RecordCount > 0  then
+    begin
+      if MessageDlg('Essa operação irá excluir os limites de créditos do produtor. Deseja continuar?', mtWarning, [mbYes,mbNo],0) = mrYes then
+      begin
+        DM_PRINCIPAL.sqlAux.Close;
+        DM_PRINCIPAL.sqlAux.CommandText := 'DELETE FROM PSCN_LIMITE_CREDITO WHERE PROR_CODIGO = ' + cdsProdutorPROR_CODIGO.AsString;
+        DM_PRINCIPAL.sqlAux.ExecSQL;
+      end else
+        Exit;
+    end;
     cdsProdutor.Delete;
     cdsProdutor.ApplyUpdates(-1);
     LimparDados;
@@ -185,7 +308,7 @@ begin
   spbSair.Enabled      := True;
   bEditar              := False;
   pnlDados.Enabled     := False;
-
+  tsLimite.Visible     := False;
 end;
 
 procedure TFRM_Produtor.spbNovoClick(Sender: TObject);
@@ -199,7 +322,9 @@ begin
   spbSair.Enabled      := False;
   bEditar              := False;
   pnlDados.Enabled     := True;
+  tsLimite.Visible     := False;
 
+  LimparDados;
   cdsProdutor.Close;
   DM_PRINCIPAL.sqlProdutor.Close;
   DM_PRINCIPAL.sqlProdutor.SQL.Clear;
@@ -220,6 +345,7 @@ begin
   spbSair.Enabled      := False;
   bEditar              := False;
   pnlDados.Enabled     := False;
+
   FRM_Pesquisa.PesquisaGeral('R');
   FRM_Pesquisa.ShowModal;
   if FRM_Pesquisa.Tag = 1 then
@@ -252,6 +378,7 @@ begin
     begin
       cdsProdutor.Append;
       cdsProdutorPROR_CODIGO.AsInteger := DM_PRINCIPAL.GeraCodigo('PSCN_PRODUTOR', 'PROR_CODIGO');
+      cdsProdutorPROR_DATA_CADASTRO.AsDateTime := Now;
     end;
 
     iCodigo := cdsProdutorPROR_CODIGO.AsString;
@@ -259,6 +386,12 @@ begin
     cdsProdutorPROR_NOME.AsString     := edtNome.Text;
     cdsProdutor.Post;
     cdsProdutor.ApplyUpdates(-1);
+
+    if bEditar then
+    begin
+      if cdsLimite.RecordCount > 0 then
+        cdsLimite.ApplyUpdates(-1);
+    end;
     DM_PRINCIPAL.DBEConexao.Commit(tTrans);
     except on E: Exception do
     begin
@@ -268,17 +401,36 @@ begin
     end;
   end;
 
-    spbNovo.Enabled      := True;
-    spbPesquisar.Enabled := True;
-    spbEditar.Enabled    := True;
-    spbSalvar.Enabled    := False;
-    spbCancelar.Enabled  := False;
-    spbExcluir.Enabled   := False;
-    spbSair.Enabled      := True;
-    bEditar              := False;
-    pnlDados.Enabled     := False;
+  spbNovo.Enabled      := True;
+  spbPesquisar.Enabled := True;
+  spbEditar.Enabled    := True;
+  spbSalvar.Enabled    := False;
+  spbCancelar.Enabled  := False;
+  spbExcluir.Enabled   := False;
+  spbSair.Enabled      := True;
+  bEditar              := False;
+  pnlDados.Enabled     := False;
+  tsLimite.Visible     := True;
+  PageControl1.ActivePage := tsDados;
 
   CarregaDados(iCodigo);
+end;
+
+procedure TFRM_Produtor.spIncluirLimiteClick(Sender: TObject);
+begin
+  if edtCodDistribuidor.Text = '' then
+    exit;
+  if edtCodLimite.Text = '' then
+  begin
+    cdsLimite.Append;
+    cdsLimiteLICR_CODIGO.AsInteger := DM_PRINCIPAL.GeraCodigo('PSCN_LIMITE_CREDITO','LICR_CODIGO');
+  end
+  else
+    cdsLimite.Edit;
+
+  cdsLimiteDIST_CODIGO.AsString := edtCodDistribuidor.Text;
+  cdsLimiteLICR_VALOR_LIMITE.AsCurrency := StrToCurr(edtLimite.Text);
+  cdsLimite.Post;
 end;
 
 end.

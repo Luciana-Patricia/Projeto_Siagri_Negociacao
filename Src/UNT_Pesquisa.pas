@@ -141,13 +141,23 @@ begin
         '    R.PROR_CODIGO "Codigo", R.PROR_CPF_CNPJ "CPF / CNPJ", R.PROR_NOME "Nome" ' +
         'FROM  '+
         '    PSCN_PRODUTOR R ';
-    sqlPesquisa.Open;
-    cdsPesquisa.Active := True;
+
+  end
+  else if (tabela = 'L') then
+  begin
+    sTela := 'L';
+    sqlPesquisa.CommandText :=
+        'SELECT ' +
+        '    D.DIST_CODIGO "Codigo", D.DIST_CNPJ "CNPJ",  D.DIST_NOME  "Nome"' +
+        'FROM  '+
+        '    PSCN_DISTRIBUIDOR D ';
 
   end;
-
   if sqlPesquisa.CommandText = '' then
     FRM_Pesquisa.Close;
+
+  sqlPesquisa.Open;
+  cdsPesquisa.Active := True;
 
 end;
 

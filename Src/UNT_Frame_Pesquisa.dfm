@@ -22,7 +22,8 @@ object IWFrame2: TIWFrame2
     ShowHint = True
     ZIndex = 1000
     Splitter = False
-    ExplicitHeight = 73
+    ExplicitLeft = -3
+    ExplicitTop = 16
     object spbCodigo: TSpeedButton
       Left = 79
       Top = 32
@@ -125,7 +126,7 @@ object IWFrame2: TIWFrame2
       Caption = 'C'#243'digo'
     end
     object Nome: TLabel
-      Left = 112
+      Left = 108
       Top = 17
       Width = 27
       Height = 13

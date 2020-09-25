@@ -2,8 +2,8 @@ object FRM_Produtor: TFRM_Produtor
   Left = 0
   Top = 0
   Caption = 'Cadastro Produtor'
-  ClientHeight = 252
-  ClientWidth = 439
+  ClientHeight = 272
+  ClientWidth = 496
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,11 +18,11 @@ object FRM_Produtor: TFRM_Produtor
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 439
+    Width = 496
     Height = 35
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 447
+    ExplicitWidth = 439
     object spbNovo: TSpeedButton
       Left = 1
       Top = 1
@@ -306,13 +306,13 @@ object FRM_Produtor: TFRM_Produtor
   end
   object Panel3: TPanel
     Left = 0
-    Top = 217
-    Width = 439
+    Top = 237
+    Width = 496
     Height = 35
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 166
-    ExplicitWidth = 447
+    ExplicitTop = 217
+    ExplicitWidth = 439
     object spbSalvar: TSpeedButton
       Left = 71
       Top = 1
@@ -350,7 +350,7 @@ object FRM_Produtor: TFRM_Produtor
       ExplicitHeight = 30
     end
     object spbSair: TSpeedButton
-      Left = 368
+      Left = 425
       Top = 1
       Width = 70
       Height = 33
@@ -371,87 +371,321 @@ object FRM_Produtor: TFRM_Produtor
       ExplicitHeight = 30
     end
   end
-  object tbControl: TTabControl
+  object PageControl1: TPageControl
     Left = 0
     Top = 35
-    Width = 439
-    Height = 182
+    Width = 496
+    Height = 202
+    ActivePage = tsLimite
     Align = alClient
-    MultiSelect = True
     TabOrder = 2
-    Tabs.Strings = (
-      'Dados produtor'
-      'Limites de cr'#233'dito')
-    TabIndex = 0
-    object pnlDados: TPanel
-      Left = 4
-      Top = 24
-      Width = 431
-      Height = 154
-      Align = alClient
-      TabOrder = 0
-      ExplicitLeft = -158
-      ExplicitTop = 35
-      ExplicitWidth = 447
-      ExplicitHeight = 131
-      object Label1: TLabel
-        Left = 5
-        Top = 16
-        Width = 33
-        Height = 13
-        Caption = 'C'#243'digo'
-      end
-      object lblCPFCNPJ: TLabel
-        Left = 296
-        Top = 16
-        Width = 19
-        Height = 13
-        Caption = 'CPF'
-      end
-      object Label2: TLabel
-        Left = 5
-        Top = 64
-        Width = 27
-        Height = 13
-        Caption = 'Nome'
-      end
-      object edtCodigo: TEdit
-        Left = 5
-        Top = 35
-        Width = 121
-        Height = 21
-        Enabled = False
+    ExplicitLeft = 56
+    ExplicitTop = 223
+    ExplicitWidth = 289
+    ExplicitHeight = 193
+    object tsDados: TTabSheet
+      Caption = 'Dados produtor'
+      ExplicitWidth = 281
+      ExplicitHeight = 165
+      object pnlDados: TPanel
+        Left = 0
+        Top = 0
+        Width = 488
+        Height = 174
+        Align = alClient
         TabOrder = 0
+        ExplicitLeft = -32
+        ExplicitTop = 3
+        ExplicitWidth = 475
+        ExplicitHeight = 130
+        object Label1: TLabel
+          Left = 5
+          Top = 16
+          Width = 33
+          Height = 13
+          Caption = 'C'#243'digo'
+        end
+        object lblCPFCNPJ: TLabel
+          Left = 321
+          Top = 16
+          Width = 19
+          Height = 13
+          Caption = 'CPF'
+        end
+        object Label2: TLabel
+          Left = 5
+          Top = 64
+          Width = 27
+          Height = 13
+          Caption = 'Nome'
+        end
+        object edtCodigo: TEdit
+          Left = 5
+          Top = 35
+          Width = 121
+          Height = 21
+          Enabled = False
+          TabOrder = 2
+        end
+        object edtCPFCNPJ: TEdit
+          Left = 320
+          Top = 35
+          Width = 121
+          Height = 21
+          TabOrder = 1
+          OnExit = edtCPFCNPJExit
+          OnKeyPress = edtCPFCNPJKeyPress
+        end
+        object rgTipoProdutor: TRadioGroup
+          Left = 133
+          Top = 19
+          Width = 182
+          Height = 37
+          Caption = 'Pessoa'
+          Columns = 2
+          ItemIndex = 0
+          Items.Strings = (
+            'F'#237'sica'
+            'Jur'#237'dica')
+          TabOrder = 0
+          OnClick = rgTipoProdutorClick
+        end
+        object edtNome: TEdit
+          Left = 5
+          Top = 83
+          Width = 436
+          Height = 21
+          TabOrder = 3
+        end
       end
-      object edtCPFCNPJ: TEdit
-        Left = 295
-        Top = 35
-        Width = 121
-        Height = 21
+    end
+    object tsLimite: TTabSheet
+      Caption = 'Limite de cr'#233'dito'
+      ImageIndex = 1
+      ExplicitWidth = 281
+      ExplicitHeight = 165
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 488
+        Height = 65
+        Align = alTop
+        TabOrder = 0
+        ExplicitWidth = 650
+        object Label3: TLabel
+          Left = 3
+          Top = 9
+          Width = 33
+          Height = 13
+          Caption = 'C'#243'digo'
+        end
+        object spbCodigo: TSpeedButton
+          Left = 300
+          Top = 23
+          Width = 22
+          Height = 22
+          Glyph.Data = {
+            E6040000424DE604000000000000360000002800000014000000140000000100
+            180000000000B0040000C40E0000C40E00000000000000000000FFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF17B4E7419BDCFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1AB4E758AEE3FFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6DCEEFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFF58AEE43177BAFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFF6DCEEF58AEE3275A8DFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFF29B9E86FCBEE3583CAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFF17B4E76FCBEE2969A8FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFF29B9E85151519B9998FFE6CFFFE6CFFFE6CFFFE6CFFDE6CFEA
+            EAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFE6CFFFE6CFFAE2D0FCEEE4FCF0E7FEE8D5FFE6CFFFE5CEFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5E
+            5954FEE2C9FAC8A2FCEFE6FDF5EFFDF7F0FDF9F4FCF8F4FFE6CF878787FFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF61574DF8B9
+            88F9C093FDF4EDFEF8F3FEF9F4FDF8F4FDF8F4FCF0E5483F37FFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA79888F8B786F9C093
+            FDF5EEFEF9F4FEF9F4FDF8F4FDF8F4FBF2EA4D423BFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF473D36FAC092FBC69EFDEDE1FD
+            F4EDFEF6EEFCEFE7FCEEE3F9E0CD3F362FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF69615BFCD3B3FCD5B7FCE3D1FCEADCFCEC
+            DEFAE5D5FAE3D1FDE1C9D7D7D7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE6CFFFE6CFFCD9BEFACDA9F9CBA8F8C9A5
+            F8C8A3FFE6CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8D8073FEE6CFFFE6CF5C524AEAEAE9FF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFF}
+          OnClick = spbCodigoClick
+        end
+        object lblNomeDist: TLabel
+          Left = 39
+          Top = 9
+          Width = 84
+          Height = 13
+          Caption = 'Nome Distribuidor'
+        end
+        object Label4: TLabel
+          Left = 327
+          Top = 9
+          Width = 78
+          Height = 13
+          Caption = 'Limite de cr'#233'dito'
+        end
+        object spIncluirLimite: TSpeedButton
+          Left = 423
+          Top = 24
+          Width = 23
+          Height = 22
+          Glyph.Data = {
+            36030000424D3603000000000000360000002800000010000000100000000100
+            18000000000000030000C40E0000C40E00000000000000000000FFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFDADBDBB4B7B7B2B6B5B1B5B4B4B7B7DDDEDEFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFD60918838C8B034
+            C6AF33C8B036CAB268948CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFAFAFA5C9A8E49F8DB44F7DB44FADD48FCDF659A91FFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFBFB5E978D46E9CD40
+            E6CA40E7CB45EBCF66988FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFCFCFC5F958B46E0C33FDBBF3FDCC146E2C568968EFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFD8DADA7D918D758B86778D8871878348928444D3B73E
+            D0B43FD1B543D4B8488F81738984778D89758B867D918DD8DADAA4ADAC5AB39C
+            4BB99E4ABDA24AC2A745C3A73EC4A73EC7AA3EC7AA3EC5A945C5AA49C5AA4AC0
+            A54BBDA158B59EA6AFADA4ACAA4DAB9338AD8F3AB0923AB5973BB99B3BBB9D3B
+            BEA03BBEA03BBD9F3BBB9D3AB89A3AB39539B1914DAD94A5AEACA3ACAA5EB49D
+            57BBA05CBCA361C0A865C4AC67C7AF68C8B168C8B166C8AF63C4AC5FC1A759BC
+            A254BA9F5CB29CA5AEACA4AEAC7DCAB586D9C28ED9C597DECA97DAC893D5C395
+            D6C595D6C591D4C294DAC792DCC888D7C17ED6BD78C8B3A6AFAEC2C7C666958A
+            6B9B906F9C916C998E79B0A3A6DFCFA5DCCDA4DDCDA3DDCD75AC9F6C998E6D9B
+            90699B8F65948AC2C7C6FEFEFEF6F6F6F4F4F4F7F7F7F0F0F073928BBCEDE0B8
+            E6D9B7E6D9B7EADC75918AF5F5F5F6F6F6F4F4F4F6F6F6FEFEFEFFFFFFFFFFFF
+            FFFFFFFFFFFFFCFCFC7A9791CDF4EACAEDE4C9EDE4C7F0E67B9791FFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFAFAFA7C9892E0FCF5DE
+            F6EFDDF6EFD8F8F17D9791FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFDFDFD7F9C96E1FEF6DFF8F1DEF7F1D9FBF3809B95FFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB6BDBB8D9E9A91
+            A19E91A19E8C9D9ABBC1C0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+          OnClick = spIncluirLimiteClick
+        end
+        object spbDeletarLimite: TSpeedButton
+          Left = 452
+          Top = 24
+          Width = 23
+          Height = 22
+          Glyph.Data = {
+            36030000424D3603000000000000360000002800000010000000100000000100
+            18000000000000030000C40E0000C40E00000000000000000000FFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA4ADAC5AB39C
+            4BB99E4ABDA24AC2A745C3A73EC4A73EC7AA3EC7AA3EC5A945C5AA49C5AA4AC0
+            A54BBDA158B59EA6AFADA4ACAA4DAB9338AD8F3AB0923AB5973BB99B3BBB9D3B
+            BEA03BBEA03BBD9F3BBB9D3AB89A3AB39539B1914DAD94A5AEACA3ACAA5EB49D
+            57BBA05CBCA361C0A865C4AC67C7AF68C8B168C8B166C8AF63C4AC5FC1A759BC
+            A254BA9F5CB29CA5AEACA4AEAC7DCAB586D9C28ED9C597DECA97DAC893D5C395
+            D6C595D6C591D4C294DAC792DCC888D7C17ED6BD78C8B3A6AFAEFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+          OnClick = spbDeletarLimiteClick
+        end
+        object edtCodDistribuidor: TEdit
+          Left = 3
+          Top = 24
+          Width = 32
+          Height = 21
+          Enabled = False
+          TabOrder = 0
+        end
+        object edtNomeDistribuidor: TEdit
+          Left = 39
+          Top = 24
+          Width = 259
+          Height = 21
+          Enabled = False
+          TabOrder = 1
+        end
+        object medtLimite: TMaskEdit
+          Left = 328
+          Top = 51
+          Width = 82
+          Height = 21
+          EditMask = '###,###.00;1;_'
+          MaxLength = 10
+          TabOrder = 2
+          Text = '   ,   .  '
+        end
+        object edtCodLimite: TEdit
+          Left = 3
+          Top = 61
+          Width = 34
+          Height = 21
+          TabOrder = 3
+          Visible = False
+        end
+        object edtLimite: TEdit
+          Left = 328
+          Top = 24
+          Width = 89
+          Height = 21
+          TabOrder = 4
+          OnKeyPress = edtLimiteKeyPress
+        end
+      end
+      object dbgridLimite: TDBGrid
+        Left = 0
+        Top = 65
+        Width = 488
+        Height = 109
+        Align = alClient
+        DataSource = dsLimite
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         TabOrder = 1
-        OnExit = edtCPFCNPJExit
-        OnKeyPress = edtCPFCNPJKeyPress
-      end
-      object rgTipoProdutor: TRadioGroup
-        Left = 132
-        Top = 19
-        Width = 157
-        Height = 37
-        Caption = 'Pessoa'
-        Columns = 2
-        ItemIndex = 0
-        Items.Strings = (
-          'F'#237'sica'
-          'Jur'#237'dica')
-        TabOrder = 2
-        OnClick = rgTipoProdutorClick
-      end
-      object edtNome: TEdit
-        Left = 5
-        Top = 83
-        Width = 411
-        Height = 21
-        TabOrder = 3
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        OnDblClick = dbgridLimiteDblClick
+        Columns = <
+          item
+            Expanded = False
+            Title.Caption = 'CNPJ'
+            Width = 92
+            Visible = True
+          end
+          item
+            Expanded = False
+            Title.Caption = 'Distribuidor'
+            Width = 262
+            Visible = True
+          end
+          item
+            Expanded = False
+            Title.Caption = 'Limite de cr'#233'dito'
+            Width = 97
+            Visible = True
+          end>
       end
     end
   end
@@ -459,8 +693,7 @@ object FRM_Produtor: TFRM_Produtor
     Aggregates = <>
     Params = <>
     ProviderName = 'dspProdutor'
-    Left = 248
-    Top = 3
+    Left = 152
     object cdsProdutorPROR_CODIGO: TIntegerField
       FieldName = 'PROR_CODIGO'
       Required = True
@@ -479,6 +712,50 @@ object FRM_Produtor: TFRM_Produtor
   end
   object dspProdutor: TDataSetProvider
     DataSet = DM_PRINCIPAL.sqlProdutor
-    Left = 184
+    Left = 104
+  end
+  object dsLimite: TDataSource
+    DataSet = cdsLimite
+    Left = 221
+  end
+  object cdsLimite: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    ProviderName = 'dspLimite'
+    Left = 277
+    object cdsLimiteLICR_CODIGO: TIntegerField
+      DisplayLabel = 'C'#243'digo'
+      FieldName = 'LICR_CODIGO'
+      Required = True
+    end
+    object cdsLimiteDIST_CODIGO: TIntegerField
+      FieldName = 'DIST_CODIGO'
+      Required = True
+    end
+    object cdsLimitePROR_CODIGO: TIntegerField
+      FieldName = 'PROR_CODIGO'
+      Required = True
+    end
+    object cdsLimiteLICR_VALOR_LIMITE: TFMTBCDField
+      FieldName = 'LICR_VALOR_LIMITE'
+      Precision = 18
+      Size = 2
+    end
+    object cdsLimiteDIST_CNPJ: TStringField
+      DisplayLabel = 'CNPJ'
+      FieldName = 'DIST_CNPJ'
+      ReadOnly = True
+      Size = 14
+    end
+    object cdsLimiteDIST_NOME: TStringField
+      DisplayLabel = 'Nome'
+      FieldName = 'DIST_NOME'
+      ReadOnly = True
+      Size = 150
+    end
+  end
+  object dspLimite: TDataSetProvider
+    DataSet = DM_PRINCIPAL.sqlLimite
+    Left = 333
   end
 end

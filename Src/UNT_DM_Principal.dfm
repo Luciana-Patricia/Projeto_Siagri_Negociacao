@@ -114,4 +114,29 @@ object DM_PRINCIPAL: TDM_PRINCIPAL
     Left = 208
     Top = 72
   end
+  object sqlLimite: TSQLQuery
+    MaxBlobSize = -1
+    Params = <>
+    SQL.Strings = (
+      'SELECT'
+      '    LC.LICR_CODIGO,'
+      '    LC.DIST_CODIGO,'
+      '    LC.PROR_CODIGO,'
+      '    LC.LICR_VALOR_LIMITE,'
+      '    D.DIST_CNPJ,'
+      '    D.DIST_NOME'
+      'FROM'
+      '    PSCN_LIMITE_CREDITO LC'
+      '        INNER JOIN PSCN_PRODUTOR R'
+      '            ON LC.PROR_CODIGO = R.PROR_CODIGO'
+      '        INNER JOIN PSCN_DISTRIBUIDOR D'
+      '            ON LC.DIST_CODIGO = D.DIST_CODIGO'
+      'WHERE'
+      '    LC.LICR_CODIGO = 1'
+      ''
+      '')
+    SQLConnection = DBEConexao
+    Left = 152
+    Top = 72
+  end
 end

@@ -22,6 +22,7 @@ type
     procedure Produtor1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
 
   public
@@ -35,8 +36,16 @@ implementation
 
 {$R *.dfm}
 
-uses UNT_Produtor, UNT_DM_Principal;
+uses UNT_Produtor, UNT_DM_Principal, UNT_Pesquisa;
 
+
+procedure Tfrm_Principal.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  FreeAndNil(frm_Principal);
+  FreeAndNil(FRM_Pesquisa);
+  FreeAndNil(DM_PRINCIPAL);
+  Application.Terminate;
+end;
 
 procedure Tfrm_Principal.FormShow(Sender: TObject);
 begin

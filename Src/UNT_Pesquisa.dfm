@@ -26,8 +26,9 @@ object FRM_Pesquisa: TFRM_Pesquisa
     ExplicitWidth = 442
     inherited IWFrameRegion: TIWRegion
       Width = 442
+      ExplicitLeft = 0
+      ExplicitTop = 0
       ExplicitWidth = 442
-      ExplicitHeight = 74
       inherited spbCodigo: TSpeedButton
         OnClick = IWFrame21spbCodigoClick
       end

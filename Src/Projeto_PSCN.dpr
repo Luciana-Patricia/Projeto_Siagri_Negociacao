@@ -6,7 +6,8 @@ uses
   UNT_Frame_Pesquisa in 'UNT_Frame_Pesquisa.pas' {IWFrame2: TFrame},
   UNT_Produtor in 'UNT_Produtor.pas' {FRM_Produtor},
   UNT_DM_Principal in 'UNT_DM_Principal.pas' {DM_PRINCIPAL: TDataModule},
-  UNT_Pesquisa in 'UNT_Pesquisa.pas' {FRM_Pesquisa};
+  UNT_Pesquisa in 'UNT_Pesquisa.pas' {FRM_Pesquisa},
+  UNT_Distribuidor in 'UNT_Distribuidor.pas' {FRM_Distribuidor};
 
 {$R *.res}
 

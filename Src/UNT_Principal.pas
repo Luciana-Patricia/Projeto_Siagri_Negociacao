@@ -1,11 +1,10 @@
 unit UNT_Principal;
-
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ComCtrls, Vcl.ExtCtrls,
-  Vcl.Imaging.pngimage;
+  Vcl.Imaging.pngimage, Vcl.Grids, Vcl.StdCtrls;
 
 type
   Tfrm_Principal = class(TForm)
@@ -23,8 +22,10 @@ type
     procedure Timer1Timer(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure Distribuidor1Click(Sender: TObject);
   private
-
+    currCellCol, currCellRow: Integer;
   public
     { Public declarations }
   end;
@@ -36,8 +37,15 @@ implementation
 
 {$R *.dfm}
 
-uses UNT_Produtor, UNT_DM_Principal, UNT_Pesquisa;
+uses UNT_Produtor, UNT_DM_Principal, UNT_Pesquisa, UNT_Distribuidor;
 
+
+procedure Tfrm_Principal.Distribuidor1Click(Sender: TObject);
+begin
+  if FRM_Distribuidor = nil then
+    Application.CreateForm(TFRM_Distribuidor,FRM_Distribuidor);
+  FRM_Distribuidor.ShowModal;
+end;
 
 procedure Tfrm_Principal.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -45,6 +53,11 @@ begin
   FreeAndNil(FRM_Pesquisa);
   FreeAndNil(DM_PRINCIPAL);
   Application.Terminate;
+end;
+
+procedure Tfrm_Principal.FormCreate(Sender: TObject);
+begin
+  FormatSettings.DecimalSeparator := '.';
 end;
 
 procedure Tfrm_Principal.FormShow(Sender: TObject);
@@ -65,5 +78,8 @@ procedure Tfrm_Principal.Timer1Timer(Sender: TObject);
 begin
   StatusBarPrincipal.Panels[0].Text := FormatDateTime('DD/MM/YYYY hh:mm:ss', Now);
 end;
+
+
+
 
 end.

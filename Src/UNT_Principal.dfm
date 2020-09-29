@@ -14,6 +14,7 @@ object frm_Principal: Tfrm_Principal
   OldCreateOrder = False
   Position = poDesktopCenter
   OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -383,9 +384,7 @@ object frm_Principal: Tfrm_Principal
       424111428C85822284180B05450831160A8A10622CFF070C990FD80328268B00
       00000049454E44AE426082}
     Stretch = True
-    ExplicitTop = -6
-    ExplicitWidth = 300
-    ExplicitHeight = 264
+    ExplicitLeft = 8
   end
   object StatusBarPrincipal: TStatusBar
     Left = 0
@@ -412,6 +411,7 @@ object frm_Principal: Tfrm_Principal
       end
       object Distribuidor1: TMenuItem
         Caption = '&Distribuidor'
+        OnClick = Distribuidor1Click
       end
       object Produto1: TMenuItem
         Caption = '&Produto'

@@ -2,8 +2,8 @@ object FRM_Produtor: TFRM_Produtor
   Left = 0
   Top = 0
   Caption = 'Cadastro Produtor'
-  ClientHeight = 272
-  ClientWidth = 496
+  ClientHeight = 289
+  ClientWidth = 509
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,17 +12,17 @@ object FRM_Produtor: TFRM_Produtor
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 496
+    Width = 509
     Height = 35
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 439
     object spbNovo: TSpeedButton
       Left = 1
       Top = 1
@@ -306,13 +306,11 @@ object FRM_Produtor: TFRM_Produtor
   end
   object Panel3: TPanel
     Left = 0
-    Top = 237
-    Width = 496
+    Top = 254
+    Width = 509
     Height = 35
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 217
-    ExplicitWidth = 439
     object spbSalvar: TSpeedButton
       Left = 71
       Top = 1
@@ -350,7 +348,7 @@ object FRM_Produtor: TFRM_Produtor
       ExplicitHeight = 30
     end
     object spbSair: TSpeedButton
-      Left = 425
+      Left = 438
       Top = 1
       Width = 70
       Height = 33
@@ -374,30 +372,20 @@ object FRM_Produtor: TFRM_Produtor
   object PageControl1: TPageControl
     Left = 0
     Top = 35
-    Width = 496
-    Height = 202
-    ActivePage = tsLimite
+    Width = 509
+    Height = 219
+    ActivePage = tsDados
     Align = alClient
     TabOrder = 2
-    ExplicitLeft = 56
-    ExplicitTop = 223
-    ExplicitWidth = 289
-    ExplicitHeight = 193
     object tsDados: TTabSheet
       Caption = 'Dados produtor'
-      ExplicitWidth = 281
-      ExplicitHeight = 165
       object pnlDados: TPanel
         Left = 0
         Top = 0
-        Width = 488
-        Height = 174
+        Width = 501
+        Height = 191
         Align = alClient
         TabOrder = 0
-        ExplicitLeft = -32
-        ExplicitTop = 3
-        ExplicitWidth = 475
-        ExplicitHeight = 130
         object Label1: TLabel
           Left = 5
           Top = 16
@@ -462,25 +450,22 @@ object FRM_Produtor: TFRM_Produtor
     object tsLimite: TTabSheet
       Caption = 'Limite de cr'#233'dito'
       ImageIndex = 1
-      ExplicitWidth = 281
-      ExplicitHeight = 165
-      object Panel2: TPanel
+      object pnlDadosLimite: TPanel
         Left = 0
         Top = 0
-        Width = 488
+        Width = 501
         Height = 65
         Align = alTop
         TabOrder = 0
-        ExplicitWidth = 650
         object Label3: TLabel
           Left = 3
           Top = 9
-          Width = 33
+          Width = 25
           Height = 13
-          Caption = 'C'#243'digo'
+          Caption = 'CNPJ'
         end
         object spbCodigo: TSpeedButton
-          Left = 300
+          Left = 319
           Top = 23
           Width = 22
           Height = 22
@@ -528,21 +513,21 @@ object FRM_Produtor: TFRM_Produtor
           OnClick = spbCodigoClick
         end
         object lblNomeDist: TLabel
-          Left = 39
+          Left = 93
           Top = 9
           Width = 84
           Height = 13
           Caption = 'Nome Distribuidor'
         end
         object Label4: TLabel
-          Left = 327
+          Left = 343
           Top = 9
-          Width = 78
+          Width = 102
           Height = 13
-          Caption = 'Limite de cr'#233'dito'
+          Caption = 'Limite de cr'#233'dito (R$)'
         end
         object spIncluirLimite: TSpeedButton
-          Left = 423
+          Left = 437
           Top = 24
           Width = 23
           Height = 22
@@ -576,7 +561,7 @@ object FRM_Produtor: TFRM_Produtor
           OnClick = spIncluirLimiteClick
         end
         object spbDeletarLimite: TSpeedButton
-          Left = 452
+          Left = 462
           Top = 24
           Width = 23
           Height = 22
@@ -610,56 +595,55 @@ object FRM_Produtor: TFRM_Produtor
           OnClick = spbDeletarLimiteClick
         end
         object edtCodDistribuidor: TEdit
-          Left = 3
-          Top = 24
+          Left = 43
+          Top = 60
           Width = 32
           Height = 21
           Enabled = False
-          TabOrder = 0
+          TabOrder = 3
+          Visible = False
         end
         object edtNomeDistribuidor: TEdit
-          Left = 39
+          Left = 93
           Top = 24
-          Width = 259
+          Width = 223
           Height = 21
           Enabled = False
           TabOrder = 1
-        end
-        object medtLimite: TMaskEdit
-          Left = 328
-          Top = 51
-          Width = 82
-          Height = 21
-          EditMask = '###,###.00;1;_'
-          MaxLength = 10
-          TabOrder = 2
-          Text = '   ,   .  '
         end
         object edtCodLimite: TEdit
           Left = 3
           Top = 61
           Width = 34
           Height = 21
-          TabOrder = 3
+          TabOrder = 4
           Visible = False
         end
         object edtLimite: TEdit
-          Left = 328
+          Left = 343
           Top = 24
           Width = 89
           Height = 21
-          TabOrder = 4
+          TabOrder = 2
+          OnExit = edtLimiteExit
           OnKeyPress = edtLimiteKeyPress
+        end
+        object edtCNPJDistribuidor: TEdit
+          Left = 3
+          Top = 24
+          Width = 84
+          Height = 21
+          TabOrder = 0
         end
       end
       object dbgridLimite: TDBGrid
         Left = 0
         Top = 65
-        Width = 488
-        Height = 109
+        Width = 501
+        Height = 126
         Align = alClient
         DataSource = dsLimite
-        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         TabOrder = 1
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
@@ -670,20 +654,19 @@ object FRM_Produtor: TFRM_Produtor
         Columns = <
           item
             Expanded = False
-            Title.Caption = 'CNPJ'
-            Width = 92
+            FieldName = 'DIST_CNPJ'
             Visible = True
           end
           item
             Expanded = False
-            Title.Caption = 'Distribuidor'
-            Width = 262
+            FieldName = 'DIST_NOME'
+            Width = 250
             Visible = True
           end
           item
             Expanded = False
-            Title.Caption = 'Limite de cr'#233'dito'
-            Width = 97
+            FieldName = 'LICR_VALOR_LIMITE'
+            Title.Caption = 'Limite (R$)'
             Visible = True
           end>
       end
@@ -715,6 +698,7 @@ object FRM_Produtor: TFRM_Produtor
     Left = 104
   end
   object dsLimite: TDataSource
+    AutoEdit = False
     DataSet = cdsLimite
     Left = 221
   end
@@ -724,6 +708,7 @@ object FRM_Produtor: TFRM_Produtor
     ProviderName = 'dspLimite'
     Left = 277
     object cdsLimiteLICR_CODIGO: TIntegerField
+      Tag = 1
       DisplayLabel = 'C'#243'digo'
       FieldName = 'LICR_CODIGO'
       Required = True
@@ -737,25 +722,34 @@ object FRM_Produtor: TFRM_Produtor
       Required = True
     end
     object cdsLimiteLICR_VALOR_LIMITE: TFMTBCDField
+      DisplayLabel = 'Valor limite'
       FieldName = 'LICR_VALOR_LIMITE'
+      DisplayFormat = '#0.00'
+      currency = True
       Precision = 18
       Size = 2
+    end
+    object cdsLimiteStatusDelta: TStringField
+      FieldKind = fkCalculated
+      FieldName = 'StatusDelta'
+      Calculated = True
     end
     object cdsLimiteDIST_CNPJ: TStringField
       DisplayLabel = 'CNPJ'
       FieldName = 'DIST_CNPJ'
-      ReadOnly = True
+      ProviderFlags = []
       Size = 14
     end
     object cdsLimiteDIST_NOME: TStringField
       DisplayLabel = 'Nome'
       FieldName = 'DIST_NOME'
-      ReadOnly = True
-      Size = 150
+      ProviderFlags = []
+      Size = 70
     end
   end
   object dspLimite: TDataSetProvider
     DataSet = DM_PRINCIPAL.sqlLimite
+    Options = [poCascadeDeletes, poCascadeUpdates, poPropogateChanges, poAllowCommandText, poUseQuoteChar]
     Left = 333
   end
 end

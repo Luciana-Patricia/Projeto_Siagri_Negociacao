@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, Data.DB, IBX.IBCustomDataSet, IBX.IBDatabase,
-  Data.DBXFirebird, Data.SqlExpr, Data.FMTBcd, IBX.IBQuery;
+  Data.DBXFirebird, Data.SqlExpr, Data.FMTBcd, IBX.IBQuery, Datasnap.DBClient, Vcl.Dialogs;
 
 type
   TDM_PRINCIPAL = class(TDataModule)
@@ -19,14 +19,23 @@ type
     ibsqlProdutorPROR_DATA_CADASTRO: TDateField;
     sqlAux: TSQLQuery;
     sqlLimite: TSQLQuery;
+    sqlExecuta: TSQLQuery;
+    sqlDistribuidor: TSQLQuery;
   private
     { Private declarations }
     dbxTrans: TTransactionDesc;
   public
     { Public declarations }
     function GeraCodigo (sTabela, sCampo : String): Integer;
+    function GravaDados (cdsTabela: TClientDataSet;
+                         sTabela: String;
+                         keys: String;
+                         operacao : String) : Boolean;
     function ValidaCPF(CPF: string): boolean;
     function ValidaCNPJ(CNPJ: string): boolean;
+    function TextToCurr(Texto: String): Currency;
+    function QtdString(StringALocalizar, StringTexto: ShortString): Byte;
+    function TrocaString(texto,busca,troca : String) : String;
   end;
 
 var
@@ -39,6 +48,7 @@ implementation
 {$R *.dfm}
 
 { TDM_PRINCIPAL }
+
 Const
   ordZero = ord('0');
 
@@ -48,13 +58,177 @@ begin
   sqlAux.CommandText := 'SELECT MAX('+sCampo+') +1 FROM ' + sTabela;
   sqlAux.Open;
 
-  if sqlAux.IsEmpty then
+  if (sqlAux.IsEmpty) or (sqlAux.Fields[0].IsNull) then
   begin
     Result := 1
   end else
   begin
     Result := sqlAux.Fields[0].Value;
   end;
+
+end;
+
+function TDM_PRINCIPAL.GravaDados(cdsTabela: TClientDataSet ;sTabela, keys, operacao: String): Boolean;
+var
+  key, key1, key2: array of string;
+  iqtdKey, i, iqtdCampos: Integer;
+  skeys, sCampos, sWhere, sValue, sTexto : string;
+begin
+  try
+    cdsTabela.ControlsDisabled;
+    skeys := Keys;
+    iqtdKey := QtdString(';', skeys) + 1;
+
+    SetLength(Key1, iqtdKey);
+    SetLength(key2, iqtdKey);
+    SetLength(key, iqtdKey);
+
+    //Identificado cada chave primaria
+
+    if iqtdKey > 1 then
+    begin
+      for i := 0 to iqtdKey - 1 do
+      begin
+        if pos(';', skeys) > 0 then
+        begin
+          key[i] := copy(skeys, 1, pos(';', skeys) - 1);
+          Delete(skeys, 1, pos(';', skeys));
+        end
+        else
+          key[i] := skeys;
+      end;
+    end
+    else
+      key[0] := skeys;
+
+    sCampos := '';
+    sWhere  := '';
+    sValue  := '';
+    sTexto  := '';
+    if operacao = 'A' then
+    begin
+      for I := 0 to cdsTabela.FieldCount - 1 do
+      begin
+        if cdsTabela.Fields.Fields[i].Tag = 1 then
+          if sWhere = '' then
+            sWhere :=  ' Where ' +  cdsTabela.Fields.Fields[i].FieldName + '=' + key[0]
+          else
+            sWhere := sWhere + 'and ' + cdsTabela.Fields.Fields[i].FieldName + '=' + key[1] ;
+        if (cdsTabela.Fields.Fields[i].FieldName = 'StatusDelta') then Break;
+        if sCampos = '' then
+          sCampos := cdsTabela.Fields.Fields[i].FieldName + '=' +cdsTabela.Fields.Fields[i].AsString
+        else
+          sCampos := sCampos + ' , '+  cdsTabela.Fields.Fields[i].FieldName + '=' +cdsTabela.Fields.Fields[i].AsString;
+
+      end;
+      sqlExecuta.Close;
+      sqlExecuta.SQL.Clear;
+      sqlExecuta.SQL.Text := 'Update ' + sTabela + ' Set ' +  sCampos + sWhere;
+      sqlExecuta.ExecSQL;
+    end else if operacao  = 'E' then
+    begin
+
+    end else if operacao = 'I' then
+    begin
+      for I := 0 to cdsTabela.FieldCount - 1 do
+      begin
+        if (cdsTabela.Fields.Fields[i].FieldName = 'StatusDelta') then Break;
+
+        if sCampos = '' then
+          sCampos := cdsTabela.Fields.Fields[i].FieldName
+        else
+          sCampos := sCampos + ' , '+  cdsTabela.Fields.Fields[i].FieldName ;
+
+
+        if sValue = '' then
+          sValue :=  cdsTabela.Fields.Fields[i].AsString
+        else
+        begin
+          if cdsTabela.Fields.Fields[i].IsNull then
+            sValue := sValue + ', null '  ;
+          if cdsTabela.Fields.Fields[i].DataType in [ftString, ftWideString] then
+          begin
+            sTexto := cdsTabela.Fields.Fields[i].AsString;
+            sTexto := TrocaString(sTexto, '"', '´´');
+            sTexto := TrocaString(sTexto, '''', '´');
+            sTexto := TrocaString(sTexto, '`', '´');
+            sValue := sValue + ', ' + quotedstr(sTexto) ;
+          end
+          else if cdsTabela.Fields.Fields[i].DataType in [ftDateTime, ftDate, ftTimeStamp] then
+          begin
+            if length(cdsTabela.Fields.Fields[i].AsString) > 10 then
+              sValue := sValue + quotedstr(formatDateTime('mm/dd/yyyy hh:nn:ss', cdsTabela.Fields.Fields[i].asDateTime)) + ','
+            else
+              sValue := sValue + quotedstr(formatDateTime('mm/dd/yyyy', cdsTabela.Fields.Fields[i].asDateTime)) + ',';
+          end
+          else
+            sValue := sValue + ', ' + cdsTabela.Fields.Fields[i].AsString ;
+        end;
+
+      end;
+      sqlExecuta.Close;
+      sqlExecuta.SQL.Clear;
+      sqlExecuta.SQL.Text := 'INSERT INTO ' + sTabela + '( ' +  sCampos + ') VALUES (' + sValue + ')' ;
+      sqlExecuta.ExecSQL;
+
+    end;
+    Result := True;
+    cdsTabela.EnableControls;
+
+  except on E: Exception do
+    begin
+      MessageDlg(Format('Erro ao gravar dados da tabela ' + sTabela + '. Erro %s.', [e.Message]), mtError, [mbOK],0);
+      Result := False;
+      cdsTabela.EnableControls;
+    end;
+  end;
+end;
+
+function TDM_PRINCIPAL.QtdString(StringALocalizar,  StringTexto: ShortString): Byte;
+var
+  P: Byte;
+begin
+  Result := 0;
+  P := Pos(StringALocalizar, StringTexto);
+  while P > 0 do
+  begin
+    Inc(Result);
+    StringTexto := Copy(StringTexto, P + Length(StringALocalizar), 255);
+    P := Pos(StringALocalizar, StringTexto);
+  end;
+
+end;
+
+function TDM_PRINCIPAL.TextToCurr(Texto: String): Currency;
+var
+  i: Integer;
+  TextoLimpo: String;
+begin
+   TextoLimpo := '';
+   For i := 1 to Length(Texto) do
+  begin
+     if Texto[i] in ['0'..'9',','] then
+         TextoLimpo := TextoLimpo + Texto[i];
+  end;
+  Result := StrToFloat(TextoLimpo);
+end;
+
+function TDM_PRINCIPAL.TrocaString(texto, busca, troca: String): String;
+{ Substitui um caractere dentro da string}
+var
+  n: integer;
+begin
+  n := 1;
+  while n <= length(texto) do
+  begin
+    if Copy(texto, n, 1) = Busca then
+    begin
+      Delete(texto, n, 1);
+      Insert(Troca, texto, n);
+    end;
+    n := n + 1;
+  end;
+  Result := texto;
 
 end;
 
@@ -117,41 +291,6 @@ begin
     Result := false
   end;
 end;
-(*  Result := False;
-
-  if length(CNPJ) < 14 then
-    exit;
-
-    { Faz ''Módulo 11'' dos 12 primeiros dígitos }
-  soma := 0;
-  for pos := 12 downto 5 do { mult.: 2,3,..9 }
-    soma := soma + (ord(CNPJ[pos]) - ordZero) * (14 - pos);
-
-  for pos := 4 downto 1 do { mult.: 2,3,..5 }
-    soma := soma + (ord(CNPJ[pos]) - ordZero) * (6 - pos);
-
-  resto := 11 - soma mod 11;
-  if resto > 9 then resto := 0;
-
-  if resto <> ord(CNPJ[13]) - ordZero then
-    exit; { primeiro DV errado }
-
-    { Faz ''Módulo 11'' dos 13 primeiros dígitos }
-  soma := 0;
-  for pos := 13 downto 6 do { mult.: 2,3,..9 }
-    soma := soma + (ord(CNPJ[pos]) - ordZero) * (15 - pos);
-
-  for pos := 5 downto 1 do { mult.: 2,3,..5 }
-    soma := soma + (ord(CNPJ[pos]) - ordZero) * (7 - pos);
-
-  resto := 11 - soma mod 11;
-  if resto > 9 then resto := 0;
-
-  if resto <> ord(CNPJ[14]) - ordZero then
-    exit; { segundo DV errado }
-
-  Result := True;
-end;             *)
 
 function TDM_PRINCIPAL.ValidaCPF(CPF: string): boolean;
 var

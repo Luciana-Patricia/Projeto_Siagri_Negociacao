@@ -3,7 +3,7 @@ unit unt_Produtor;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Types, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons,
   Datasnap.Provider, Data.DB, Datasnap.DBClient, UNT_Frame_Pesquisa,Data.SqlExpr,
   Vcl.ComCtrls, Vcl.Tabs, Vcl.Mask, Vcl.Grids, Vcl.DBGrids;
@@ -36,14 +36,13 @@ type
     edtCPFCNPJ: TEdit;
     rgTipoProdutor: TRadioGroup;
     edtNome: TEdit;
-    Panel2: TPanel;
+    pnlDadosLimite: TPanel;
     Label3: TLabel;
     edtCodDistribuidor: TEdit;
     spbCodigo: TSpeedButton;
     lblNomeDist: TLabel;
     edtNomeDistribuidor: TEdit;
     Label4: TLabel;
-    medtLimite: TMaskEdit;
     spIncluirLimite: TSpeedButton;
     spbDeletarLimite: TSpeedButton;
     dbgridLimite: TDBGrid;
@@ -58,6 +57,8 @@ type
     cdsLimiteLICR_VALOR_LIMITE: TFMTBCDField;
     edtCodLimite: TEdit;
     edtLimite: TEdit;
+    edtCNPJDistribuidor: TEdit;
+    cdsLimiteStatusDelta: TStringField;
     procedure rgTipoProdutorClick(Sender: TObject);
     procedure spbNovoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -74,10 +75,13 @@ type
     procedure dbgridLimiteDblClick(Sender: TObject);
     procedure spbCodigoClick(Sender: TObject);
     procedure edtLimiteKeyPress(Sender: TObject; var Key: Char);
+    procedure edtLimiteExit(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     bEditar : Boolean;
     procedure CarregaDados(Codigo: String);
+    procedure CarregaDadosLimite;
     procedure LimparDados;
   public
     { Public declarations }
@@ -111,7 +115,14 @@ begin
   edtCPFCNPJ.Text := cdsProdutorPROR_CPF_CNPJ.AsString;
   edtNome.Text := cdsProdutorPROR_NOME.AsString;
 
-  {Carrega limite de credito}
+  CarregaDadosLimite;
+  PageControl1.ActivePage := tsDados;
+
+end;
+
+procedure TFRM_Produtor.CarregaDadosLimite;
+begin
+{Carrega limite de credito}
   cdsLimite.Close;
   DM_PRINCIPAL.sqlLimite.Close;
   DM_PRINCIPAL.sqlLimite.SQL.Clear;
@@ -130,11 +141,9 @@ begin
     '        INNER JOIN PSCN_DISTRIBUIDOR D          '+ sLineBreak +
     '            ON LC.DIST_CODIGO = D.DIST_CODIGO   '+ sLineBreak +
     'WHERE                                           '+ sLineBreak +
-    '    LC.LICR_CODIGO = ' + edtCodigo.Text;
+    '    LC.PROR_CODIGO = ' + edtCodigo.Text;
   DM_PRINCIPAL.sqlLimite.Open;
   cdsLimite.Active := True;
-  PageControl1.ActivePage := tsDados;
-
 end;
 
 procedure TFRM_Produtor.dbgridLimiteDblClick(Sender: TObject);
@@ -146,7 +155,8 @@ begin
       edtCodLimite.Text        := cdsLimiteLICR_CODIGO.AsString;
       edtCodDistribuidor.Text  := cdsLimiteDIST_CODIGO.AsString;
       edtNomeDistribuidor.Text := cdsLimiteDIST_NOME.AsString;
-      medtLimite.Text          := cdsLimiteLICR_VALOR_LIMITE.AsString;
+      edtLimite.Text           := cdsLimiteLICR_VALOR_LIMITE.AsString; //formatfloat(',0.00', strtofloat(cdsLimiteLICR_VALOR_LIMITE.AsString));
+      edtCNPJDistribuidor.Text := cdsLimiteDIST_CNPJ.AsString;
     end;
   end;
 end;
@@ -184,10 +194,24 @@ begin
     key := #0;
 end;
 
+procedure TFRM_Produtor.edtLimiteExit(Sender: TObject);
+begin
+  //edtLimite.text := formatfloat('#.##', strtofloat(edtLimite.text));
+  if edtCodDistribuidor.Text = '' then
+    edtLimite.Text := '0.00';
+end;
+
 procedure TFRM_Produtor.edtLimiteKeyPress(Sender: TObject; var Key: Char);
 begin
-  if not (key in ['0'..'9', ',',#8, #13]) then
+  if not (key in ['0'..'9', '.',#8, #13]) then
     key := #0;
+
+end;
+
+procedure TFRM_Produtor.FormCreate(Sender: TObject);
+begin
+  FormatSettings.DecimalSeparator := '.';
+//  FormatSettings.ThousandSeparator := '.';
 
 end;
 
@@ -212,7 +236,12 @@ begin
   edtCodigo.Clear;
   edtCPFCNPJ.Clear;
   edtNome.Clear;
+  edtCNPJDistribuidor.Clear;
+  edtNomeDistribuidor.Clear;
+  edtCodLimite.Clear;
+  edtCodDistribuidor.Clear;
   rgTipoProdutor.ItemIndex := -1;
+  edtLimite.Clear;
   PageControl1.ActivePage := tsDados;
 end;
 
@@ -233,6 +262,7 @@ end;
 procedure TFRM_Produtor.spbCancelarClick(Sender: TObject);
 begin
   cdsProdutor.Cancel;
+  cdsLimite.Cancel;
   spbNovo.Enabled      := True;
   spbPesquisar.Enabled := True;
   spbEditar.Enabled    := False;
@@ -243,18 +273,20 @@ begin
   bEditar              := False;
   pnlDados.Enabled     := False;
   tsLimite.Visible     := False;
+
   LimparDados;
 end;
 
 procedure TFRM_Produtor.spbCodigoClick(Sender: TObject);
 begin
-  FRM_Pesquisa.PesquisaGeral('L');
+  FRM_Pesquisa.PesquisaGeral('D');
   FRM_Pesquisa.ShowModal;
   if FRM_Pesquisa.Tag = 1 then
   begin
     if not (FRM_Pesquisa.cdsPesquisa.IsEmpty) then
       edtCodDistribuidor.Text  := FRM_Pesquisa.cdsPesquisa.FieldByName('Codigo').AsString;
       edtNomeDistribuidor.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('Nome').AsString;
+      edtCNPJDistribuidor.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('CNPJ').AsString;
   end;
 end;
 
@@ -263,7 +295,12 @@ begin
   if edtCodDistribuidor.Text = '' then
     exit;
   if cdsLimiteLICR_CODIGO.Value > 0 then
-    cdsLimite.Delete;
+  begin
+    DM_PRINCIPAL.sqlAux.Close;
+    DM_PRINCIPAL.sqlAux.CommandText := 'DELETE FROM PSCN_LIMITE_CREDITO WHERE LICR_CODIGO = ' + cdsLimiteLICR_CODIGO.AsString;
+    DM_PRINCIPAL.sqlAux.ExecSQL;
+    CarregaDadosLimite;
+  end;
 end;
 
 procedure TFRM_Produtor.spbEditarClick(Sender: TObject);
@@ -278,6 +315,7 @@ begin
   bEditar              := True;
   pnlDados.Enabled     := True;
   tsLimite.Visible     := True;
+  pnlDadosLimite.Enabled  := True;
   PageControl1.ActivePage := tsDados;
 end;
 
@@ -365,7 +403,6 @@ var
   iCodigo : String;
   tTrans: TTransactionDesc;
 begin
-
   try
 
     DM_PRINCIPAL.DBEConexao.StartTransaction(tTrans);
@@ -390,7 +427,20 @@ begin
     if bEditar then
     begin
       if cdsLimite.RecordCount > 0 then
-        cdsLimite.ApplyUpdates(-1);
+      begin
+        DM_PRINCIPAL.sqlAux.Close;
+        DM_PRINCIPAL.sqlAux.SQL.Text := 'SELECT LICR_CODIGO FROM PSCN_LIMITE_CREDITO WHERE PROR_CODIGO = ' + edtCodigo.Text;
+        DM_PRINCIPAL.sqlAux.Open;
+        cdsLimite.First;
+        while not cdsLimite.Eof do
+        begin
+          if DM_PRINCIPAL.sqlAux.Locate('LICR_CODIGO', cdsLimiteLICR_CODIGO.AsString, [loCaseInsensitive]) then
+            DM_PRINCIPAL.GravaDados(cdsLimite,'PSCN_LIMITE_CREDITO',cdsLimiteLICR_CODIGO.AsString,'A')
+          else
+            DM_PRINCIPAL.GravaDados(cdsLimite,'PSCN_LIMITE_CREDITO',cdsLimiteLICR_CODIGO.AsString,'I');
+          cdsLimite.Next;
+        end;
+      end;
     end;
     DM_PRINCIPAL.DBEConexao.Commit(tTrans);
     except on E: Exception do
@@ -411,6 +461,7 @@ begin
   bEditar              := False;
   pnlDados.Enabled     := False;
   tsLimite.Visible     := True;
+  pnlDadosLimite.Enabled  := False;
   PageControl1.ActivePage := tsDados;
 
   CarregaDados(iCodigo);
@@ -420,17 +471,30 @@ procedure TFRM_Produtor.spIncluirLimiteClick(Sender: TObject);
 begin
   if edtCodDistribuidor.Text = '' then
     exit;
-  if edtCodLimite.Text = '' then
+  if cdsLimite.Locate('DIST_CODIGO',edtCodDistribuidor.Text,[loCaseInsensitive]) then
+  //if edtCodLimite.Text = '' then
+  begin
+    cdsLimite.Edit;
+  end
+  else
   begin
     cdsLimite.Append;
     cdsLimiteLICR_CODIGO.AsInteger := DM_PRINCIPAL.GeraCodigo('PSCN_LIMITE_CREDITO','LICR_CODIGO');
-  end
-  else
-    cdsLimite.Edit;
+  end;
 
-  cdsLimiteDIST_CODIGO.AsString := edtCodDistribuidor.Text;
-  cdsLimiteLICR_VALOR_LIMITE.AsCurrency := StrToCurr(edtLimite.Text);
+  cdsLimiteDIST_CODIGO.AsString         := edtCodDistribuidor.Text;
+  cdsLimiteLICR_VALOR_LIMITE.AsFloat    := StrToFloat(edtLimite.Text); //DM_PRINCIPAL.TextToCurr(edtLimite.Text);
+  cdsLimitePROR_CODIGO.AsString         := edtCodigo.Text;
+  cdsLimiteDIST_CNPJ.AsString           := edtCNPJDistribuidor.Text;
+  cdsLimiteDIST_NOME.AsString           := edtNomeDistribuidor.Text;
   cdsLimite.Post;
+
+  edtCodDistribuidor.Clear;
+  edtCodLimite.Clear;
+  edtNomeDistribuidor.Clear;
+  edtCNPJDistribuidor.Clear;
+  edtLimite.Clear;
+
 end;
 
 end.

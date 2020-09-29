@@ -139,4 +139,20 @@ object DM_PRINCIPAL: TDM_PRINCIPAL
     Left = 152
     Top = 72
   end
+  object sqlExecuta: TSQLQuery
+    MaxBlobSize = -1
+    Params = <>
+    SQLConnection = DBEConexao
+    Left = 256
+    Top = 72
+  end
+  object sqlDistribuidor: TSQLQuery
+    MaxBlobSize = -1
+    Params = <>
+    SQL.Strings = (
+      'SELECT * FROM PSCN_DISTRIBUIDOR WHERE 0=1')
+    SQLConnection = DBEConexao
+    Left = 88
+    Top = 128
+  end
 end

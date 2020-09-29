@@ -118,13 +118,15 @@ end;
 
 procedure TFRM_Pesquisa.Pesquisa(Campo, Valor: String);
 begin
-  cdsPesquisa.Filtered:= False;
-  if cdsPesquisa.FieldByName(campo).DataType = ftInteger then
-    cdsPesquisa.Filter := campo + '=' + IWFrame21.edtCodigo.Text
-  else
-    cdsPesquisa.Filter := UpperCase(campo) + ' LIKE ' + #39 + UpperCase(valor) + '%' + #39;
-  cdsPesquisa.Filtered := True;
-
+  if not (valor = '') then
+  begin
+    cdsPesquisa.Filtered:= False;
+    if cdsPesquisa.FieldByName(campo).DataType = ftInteger then
+      cdsPesquisa.Filter := campo + '=' + IWFrame21.edtCodigo.Text
+    else
+      cdsPesquisa.Filter := UpperCase(campo) + ' LIKE ' + #39 + UpperCase(valor) + '%' + #39;
+    cdsPesquisa.Filtered := True;
+  end;
 end;
 
 procedure TFRM_Pesquisa.PesquisaGeral(Tabela, Campo, Valor: String);
@@ -143,9 +145,9 @@ begin
         '    PSCN_PRODUTOR R ';
 
   end
-  else if (tabela = 'L') then
+  else if (tabela = 'D') then
   begin
-    sTela := 'L';
+    sTela := 'D';
     sqlPesquisa.CommandText :=
         'SELECT ' +
         '    D.DIST_CODIGO "Codigo", D.DIST_CNPJ "CNPJ",  D.DIST_NOME  "Nome"' +

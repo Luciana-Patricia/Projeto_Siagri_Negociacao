@@ -12,6 +12,7 @@ object FRM_Distribuidor: TFRM_Distribuidor
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -21,8 +22,6 @@ object FRM_Distribuidor: TFRM_Distribuidor
     Height = 35
     Align = alTop
     TabOrder = 0
-    ExplicitLeft = -62
-    ExplicitWidth = 509
     object Panel2: TPanel
       Left = 1
       Top = 1
@@ -30,7 +29,6 @@ object FRM_Distribuidor: TFRM_Distribuidor
       Height = 35
       Align = alTop
       TabOrder = 0
-      ExplicitTop = 0
       object spbNovo: TSpeedButton
         Left = 1
         Top = 1
@@ -321,11 +319,8 @@ object FRM_Distribuidor: TFRM_Distribuidor
     ActivePage = tsDados
     Align = alClient
     TabOrder = 1
-    ExplicitHeight = 176
     object tsDados: TTabSheet
       Caption = 'Dados distribuidor'
-      ExplicitWidth = 501
-      ExplicitHeight = 191
       object pnlDados: TPanel
         Left = 0
         Top = 0
@@ -333,8 +328,6 @@ object FRM_Distribuidor: TFRM_Distribuidor
         Height = 126
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 501
-        ExplicitHeight = 191
         object Label1: TLabel
           Left = 5
           Top = 16
@@ -371,6 +364,7 @@ object FRM_Distribuidor: TFRM_Distribuidor
           Height = 21
           TabOrder = 0
           OnExit = edtCNPJExit
+          OnKeyPress = edtCNPJKeyPress
         end
         object edtNome: TEdit
           Left = 5
@@ -389,9 +383,6 @@ object FRM_Distribuidor: TFRM_Distribuidor
     Height = 35
     Align = alBottom
     TabOrder = 2
-    ExplicitLeft = -62
-    ExplicitTop = 211
-    ExplicitWidth = 509
     object spbSalvar: TSpeedButton
       Left = 71
       Top = 1

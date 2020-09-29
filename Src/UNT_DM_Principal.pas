@@ -21,6 +21,8 @@ type
     sqlLimite: TSQLQuery;
     sqlExecuta: TSQLQuery;
     sqlDistribuidor: TSQLQuery;
+    sqlProduto: TSQLQuery;
+    sqlPreco: TSQLQuery;
   private
     { Private declarations }
     dbxTrans: TTransactionDesc;

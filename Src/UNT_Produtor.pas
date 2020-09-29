@@ -197,7 +197,7 @@ end;
 procedure TFRM_Produtor.edtLimiteExit(Sender: TObject);
 begin
   //edtLimite.text := formatfloat('#.##', strtofloat(edtLimite.text));
-  if edtCodDistribuidor.Text = '' then
+  if edtLimite.Text = '' then
     edtLimite.Text := '0.00';
 end;
 
@@ -471,6 +471,11 @@ procedure TFRM_Produtor.spIncluirLimiteClick(Sender: TObject);
 begin
   if edtCodDistribuidor.Text = '' then
     exit;
+  if edtLimite.Text = '' then
+  begin
+    MessageDlg('Informe o valor de crédito do produtor para esse distribuidor.', mtInformation, [mbOK],0);
+    edtLimite.SetFocus;
+  end;
   if cdsLimite.Locate('DIST_CODIGO',edtCodDistribuidor.Text,[loCaseInsensitive]) then
   //if edtCodLimite.Text = '' then
   begin

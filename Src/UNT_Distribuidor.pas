@@ -43,6 +43,8 @@ type
     procedure spbSairClick(Sender: TObject);
     procedure spbSalvarClick(Sender: TObject);
     procedure edtCNPJExit(Sender: TObject);
+    procedure edtCNPJKeyPress(Sender: TObject; var Key: Char);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     bEditar :  Boolean;
@@ -87,6 +89,28 @@ begin
   end
 end;
 
+procedure TFRM_Distribuidor.edtCNPJKeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (key in ['0'..'9', #8, #13]) then
+    key := #0;
+end;
+
+procedure TFRM_Distribuidor.FormShow(Sender: TObject);
+begin
+  spbNovo.Enabled      := True;
+  spbPesquisar.Enabled := True;
+  spbEditar.Enabled    := False;
+  spbSalvar.Enabled    := False;
+  spbCancelar.Enabled  := False;
+  spbExcluir.Enabled   := False;
+  spbSair.Enabled      := True;
+  bEditar              := False;
+  pnlDados.Enabled     := False;
+  PageControl1.ActivePage := tsDados;
+  LimparDados;
+
+end;
+
 procedure TFRM_Distribuidor.LimparDados;
 begin
   edtCodigo.Clear;
@@ -129,7 +153,7 @@ end;
 
 procedure TFRM_Distribuidor.spbExcluirClick(Sender: TObject);
 begin
-  if MessageDlg('Tem certeza que deseja excluir o produtor ' + edtNome.Text + '?',mtWarning,[mbYes, mbNo],0) = mrYes then
+  if MessageDlg('Tem certeza que deseja excluir o distribuidor ' + edtNome.Text + '?',mtWarning,[mbYes, mbNo],0) = mrYes then
   begin
     cdsDistribuidor.Delete;
     cdsDistribuidor.ApplyUpdates(-1);

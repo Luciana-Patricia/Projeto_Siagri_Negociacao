@@ -155,4 +155,37 @@ object DM_PRINCIPAL: TDM_PRINCIPAL
     Left = 88
     Top = 128
   end
+  object sqlProduto: TSQLQuery
+    MaxBlobSize = -1
+    Params = <>
+    SQL.Strings = (
+      'SELECT * FROM PSCN_PRODUTO WHERE PROD_CODIGO = 0')
+    SQLConnection = DBEConexao
+    Left = 152
+    Top = 128
+  end
+  object sqlPreco: TSQLQuery
+    MaxBlobSize = -1
+    Params = <>
+    SQL.Strings = (
+      ''
+      'SELECT'
+      '    PP.PRPE_CODIGO,'
+      '    PP.PROD_CODIGO,'
+      '    PP.DIST_CODIGO,'
+      '    PP.PRPE_PRECO,'
+      '    D.DIST_CNPJ,'
+      '    D.DIST_NOME'
+      'FROM'
+      '    PSCN_PRODUTO_PRECO PP'
+      '        INNER JOIN PSCN_PRODUTO P'
+      '            ON PP.PROD_CODIGO = P.PROD_CODIGO'
+      '        INNER JOIN PSCN_DISTRIBUIDOR D'
+      '            ON PP.DIST_CODIGO = D.DIST_CODIGO'
+      'WHERE'
+      '    PP.PROD_CODIGO = 0')
+    SQLConnection = DBEConexao
+    Left = 208
+    Top = 128
+  end
 end

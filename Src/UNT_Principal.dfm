@@ -415,6 +415,7 @@ object frm_Principal: Tfrm_Principal
       end
       object Produto1: TMenuItem
         Caption = '&Produto'
+        OnClick = Produto1Click
       end
     end
     object Manuteno1: TMenuItem

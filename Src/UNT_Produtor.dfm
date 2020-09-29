@@ -374,7 +374,7 @@ object FRM_Produtor: TFRM_Produtor
     Top = 35
     Width = 509
     Height = 219
-    ActivePage = tsDados
+    ActivePage = tsLimite
     Align = alClient
     TabOrder = 2
     object tsDados: TTabSheet

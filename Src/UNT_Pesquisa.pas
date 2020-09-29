@@ -154,6 +154,15 @@ begin
         'FROM  '+
         '    PSCN_DISTRIBUIDOR D ';
 
+  end
+  else if (tabela = 'P') then
+  begin
+    sTela := 'P';
+    sqlPesquisa.CommandText :=
+        'SELECT ' +
+        '    P.PROD_CODIGO "Codigo", P.PROD_NOME "Nome" ' +
+        'FROM  '+
+        '    PSCN_PRODUTO P ';
   end;
   if sqlPesquisa.CommandText = '' then
     FRM_Pesquisa.Close;

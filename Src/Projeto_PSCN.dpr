@@ -7,7 +7,8 @@ uses
   UNT_Produtor in 'UNT_Produtor.pas' {FRM_Produtor},
   UNT_DM_Principal in 'UNT_DM_Principal.pas' {DM_PRINCIPAL: TDataModule},
   UNT_Pesquisa in 'UNT_Pesquisa.pas' {FRM_Pesquisa},
-  UNT_Distribuidor in 'UNT_Distribuidor.pas' {FRM_Distribuidor};
+  UNT_Distribuidor in 'UNT_Distribuidor.pas' {FRM_Distribuidor},
+  UNT_Produto in 'UNT_Produto.pas' {FRM_Produto};
 
 {$R *.res}
 

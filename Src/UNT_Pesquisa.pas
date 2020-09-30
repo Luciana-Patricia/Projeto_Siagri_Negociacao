@@ -122,7 +122,7 @@ begin
   begin
     cdsPesquisa.Filtered:= False;
     if cdsPesquisa.FieldByName(campo).DataType = ftInteger then
-      cdsPesquisa.Filter := campo + '=' + IWFrame21.edtCodigo.Text
+      cdsPesquisa.Filter := campo + '=' + Valor
     else
       cdsPesquisa.Filter := UpperCase(campo) + ' LIKE ' + #39 + UpperCase(valor) + '%' + #39;
     cdsPesquisa.Filtered := True;
@@ -131,6 +131,8 @@ end;
 
 procedure TFRM_Pesquisa.PesquisaGeral(Tabela, Campo, Valor: String);
 begin
+  cdsPesquisa.Filter   := '';
+  cdsPesquisa.Filtered := false;
   cdsPesquisa.Close;
   sqlPesquisa.Close;
   sqlPesquisa.CommandText := '';
@@ -140,7 +142,7 @@ begin
     sTela := 'R';
     sqlPesquisa.CommandText :=
         'SELECT ' +
-        '    R.PROR_CODIGO "Codigo", R.PROR_CPF_CNPJ "CPF / CNPJ", R.PROR_NOME "Nome" ' +
+        '    R.PROR_CODIGO "Codigo", R.PROR_CPF_CNPJ "CPF", R.PROR_NOME "Nome" ' +
         'FROM  '+
         '    PSCN_PRODUTOR R ';
 
@@ -163,12 +165,50 @@ begin
         '    P.PROD_CODIGO "Codigo", P.PROD_NOME "Nome" ' +
         'FROM  '+
         '    PSCN_PRODUTO P ';
+  end
+  else if (tabela = 'N') then
+  begin
+    sTela := 'N';
+    sqlPesquisa.CommandText :=
+        'SELECT                                 ' + sLineBreak +
+        '    N.NEGO_CODIGO "Codigo",            ' + sLineBreak +
+        '    N.NEGO_DATA_CADASTRO "Cadastro",   ' + sLineBreak +
+        '    P.PROR_CPF_CNPJ "CPF",             ' + sLineBreak +
+        '    P.PROR_NOME "Nome",                ' + sLineBreak +
+        '    N.NEGO_STATUS "Status",            ' + sLineBreak +
+        '    N.DIST_CODIGO "Cód. Distribuidor"  ' + sLineBreak +
+        'FROM                                   ' + sLineBreak +
+        '    PSCN_NEGOCIACAO N                  ' + sLineBreak +
+        '        INNER JOIN PSCN_PRODUTOR P     ' + sLineBreak +
+        '            ON N.PROR_CODIGO = P.PROR_CODIGO ' ;
+  end
+  else if (Tabela = 'PP') then
+  begin
+    sTela := 'PP';
+    sqlPesquisa.CommandText :=
+        'SELECT                                   ' + sLineBreak +
+        '    PP.PRPE_CODIGO "Codigo",             ' + sLineBreak +
+        '    PP.PROD_CODIGO "Cod.Prod." ,         ' + sLineBreak +
+        '    P.PROD_NOME  "Nome",                 ' + sLineBreak +
+        '    PP.PRPE_PRECO "Preço",               ' + sLineBreak +
+        '    PP.DIST_CODIGO "Cod.Dist."           ' + sLineBreak +
+        'FROM                                     ' + sLineBreak +
+        '    PSCN_PRODUTO_PRECO PP                ' + sLineBreak +
+        '        INNER JOIN PSCN_PRODUTO P        ' + sLineBreak +
+        '            ON PP.PROD_CODIGO = P.PROD_CODIGO  ';
   end;
+
   if sqlPesquisa.CommandText = '' then
     FRM_Pesquisa.Close;
 
   sqlPesquisa.Open;
   cdsPesquisa.Active := True;
+
+  if ((Campo <> '') and (valor <> '')) then
+  begin
+    Pesquisa(campo,valor);
+  end;
+
 
 end;
 

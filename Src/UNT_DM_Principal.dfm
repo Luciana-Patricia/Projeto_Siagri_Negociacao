@@ -188,4 +188,95 @@ object DM_PRINCIPAL: TDM_PRINCIPAL
     Left = 208
     Top = 128
   end
+  object sqlGeraCodigo: TSQLQuery
+    MaxBlobSize = -1
+    Params = <>
+    SQLConnection = DBEConexao
+    Left = 256
+    Top = 128
+  end
+  object sqlNegociacao: TSQLQuery
+    MaxBlobSize = -1
+    Params = <>
+    SQL.Strings = (
+      'SELECT'
+      '    N.NEGO_CODIGO,'
+      '    N.NEGO_DATA_CADASTRO,'
+      '    N.NEGO_DATA_PENDENTE,'
+      '    N.PROR_CODIGO,'
+      '    N.DIST_CODIGO,'
+      '    N.NEGO_STATUS,'
+      '    N.NEGO_TOTAL,'
+      '    P.PROR_NOME,'
+      '    D.DIST_NOME'
+      'FROM'
+      '    PSCN_NEGOCIACAO N'
+      '        INNER JOIN PSCN_PRODUTOR P'
+      '            ON N.PROR_CODIGO = P.PROR_CODIGO'
+      '        INNER JOIN PSCN_DISTRIBUIDOR D'
+      '            ON N.DIST_CODIGO = D.DIST_CODIGO'
+      'WHERE'
+      '    0 = 1')
+    SQLConnection = DBEConexao
+    Left = 88
+    Top = 184
+    object sqlNegociacaoNEGO_CODIGO: TIntegerField
+      FieldName = 'NEGO_CODIGO'
+    end
+    object sqlNegociacaoNEGO_DATA_CADASTRO: TDateField
+      FieldName = 'NEGO_DATA_CADASTRO'
+    end
+    object sqlNegociacaoNEGO_DATA_PENDENTE: TDateField
+      FieldName = 'NEGO_DATA_PENDENTE'
+    end
+    object sqlNegociacaoPROR_CODIGO: TIntegerField
+      FieldName = 'PROR_CODIGO'
+    end
+    object sqlNegociacaoDIST_CODIGO: TIntegerField
+      FieldName = 'DIST_CODIGO'
+    end
+    object sqlNegociacaoNEGO_STATUS: TStringField
+      FieldName = 'NEGO_STATUS'
+      Size = 15
+    end
+    object sqlNegociacaoNEGO_TOTAL: TFMTBCDField
+      FieldName = 'NEGO_TOTAL'
+      Precision = 18
+      Size = 2
+    end
+    object sqlNegociacaoPROR_NOME: TStringField
+      FieldName = 'PROR_NOME'
+      Size = 150
+    end
+    object sqlNegociacaoDIST_NOME: TStringField
+      FieldName = 'DIST_NOME'
+      Size = 150
+    end
+  end
+  object sqlItensNegociacao: TSQLQuery
+    MaxBlobSize = -1
+    Params = <>
+    SQL.Strings = (
+      ''
+      'SELECT'
+      '    I.itne_codigo,'
+      '    I.nego_codigo,'
+      '    I.PRPE_CODIGO,'
+      '    PP.PROD_CODIGO,'
+      '    P.PROD_NOME,'
+      '    PP.DIST_CODIGO,'
+      '    PP.prpe_preco'
+      'FROM'
+      '    pscn_itens_negociacao I'
+      '        INNER JOIN PSCN_PRODUTO_PRECO PP'
+      '            ON I.prpe_codigo = PP.prpe_codigo'
+      '        INNER JOIN PSCN_PRODUTO P'
+      '            ON PP.PROD_CODIGO = P.PROD_CODIGO'
+      '       '
+      'WHERE'
+      '    PP.DIST_CODIGO = 0')
+    SQLConnection = DBEConexao
+    Left = 152
+    Top = 184
+  end
 end

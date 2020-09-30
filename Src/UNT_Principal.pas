@@ -25,6 +25,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Distribuidor1Click(Sender: TObject);
     procedure Produto1Click(Sender: TObject);
+    procedure Negociao1Click(Sender: TObject);
   private
     currCellCol, currCellRow: Integer;
   public
@@ -39,7 +40,7 @@ implementation
 {$R *.dfm}
 
 uses UNT_Produtor, UNT_DM_Principal, UNT_Pesquisa, UNT_Distribuidor,
-  UNT_Produto;
+  UNT_Produto, UNT_Negociacao;
 
 
 procedure Tfrm_Principal.Distribuidor1Click(Sender: TObject);
@@ -66,6 +67,13 @@ procedure Tfrm_Principal.FormShow(Sender: TObject);
 begin
   if not DM_PRINCIPAL.Conexao.Connected then
     DM_PRINCIPAL.Conexao.Connected := True;
+end;
+
+procedure Tfrm_Principal.Negociao1Click(Sender: TObject);
+begin
+  if FRM_Negociacao = nil then
+    Application.CreateForm(TFRM_Negociacao,FRM_Negociacao);
+  FRM_Negociacao.ShowModal;
 end;
 
 procedure Tfrm_Principal.Produto1Click(Sender: TObject);

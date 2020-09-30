@@ -22,7 +22,6 @@ object FRM_Produto: TFRM_Produto
     Height = 35
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 447
     object spbNovo: TSpeedButton
       Left = 1
       Top = 1
@@ -311,8 +310,6 @@ object FRM_Produto: TFRM_Produto
     Height = 35
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 284
-    ExplicitWidth = 447
     object spbSalvar: TSpeedButton
       Left = 71
       Top = 1
@@ -379,12 +376,8 @@ object FRM_Produto: TFRM_Produto
     ActivePage = tsPreco
     Align = alClient
     TabOrder = 2
-    ExplicitWidth = 447
-    ExplicitHeight = 249
     object tsDados: TTabSheet
       Caption = 'Dados produto'
-      ExplicitWidth = 439
-      ExplicitHeight = 221
       object pnlDados: TPanel
         Left = 0
         Top = 0
@@ -392,8 +385,6 @@ object FRM_Produto: TFRM_Produto
         Height = 143
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 439
-        ExplicitHeight = 221
         object Label1: TLabel
           Left = 5
           Top = 16
@@ -428,8 +419,6 @@ object FRM_Produto: TFRM_Produto
     object tsPreco: TTabSheet
       Caption = 'Pre'#231'o por distribuidor'
       ImageIndex = 1
-      ExplicitWidth = 439
-      ExplicitHeight = 93
       object pnlDadosPreco: TPanel
         Left = 0
         Top = 0
@@ -437,7 +426,6 @@ object FRM_Produto: TFRM_Produto
         Height = 65
         Align = alTop
         TabOrder = 0
-        ExplicitWidth = 439
         object Label3: TLabel
           Left = 3
           Top = 9
@@ -606,6 +594,8 @@ object FRM_Produto: TFRM_Produto
           Width = 89
           Height = 21
           TabOrder = 2
+          OnExit = edtPrecoExit
+          OnKeyPress = edtPrecoKeyPress
         end
         object edtCNPJDistribuidor: TEdit
           Left = 3
@@ -629,6 +619,7 @@ object FRM_Produto: TFRM_Produto
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnDblClick = dbgridLimiteDblClick
         Columns = <
           item
             Expanded = False
@@ -690,6 +681,7 @@ object FRM_Produto: TFRM_Produto
     end
     object cdsPrecoPRPE_PRECO: TFMTBCDField
       FieldName = 'PRPE_PRECO'
+      DisplayFormat = '#0.00'
       Precision = 18
       Size = 2
     end

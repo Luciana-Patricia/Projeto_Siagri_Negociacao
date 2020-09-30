@@ -65,6 +65,9 @@ type
     procedure spIncluirPrecoClick(Sender: TObject);
     procedure spbDeletarPrecoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure dbgridLimiteDblClick(Sender: TObject);
+    procedure edtPrecoExit(Sender: TObject);
+    procedure edtPrecoKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     bEditar : Boolean;
@@ -126,6 +129,34 @@ begin
   DM_PRINCIPAL.sqlPreco.Open;
   cdsPreco.Active := True;
 
+end;
+
+procedure TFRM_Produto.dbgridLimiteDblClick(Sender: TObject);
+begin
+  if cdsPreco.Active then
+  begin
+    if cdsPrecoPRPE_CODIGO.Value > 0  then
+    begin
+      edtCodPreco.Text         := cdsPrecoPRPE_CODIGO.AsString;
+      edtCodDistribuidor.Text  := cdsPrecoDIST_CODIGO.AsString;
+      edtNomeDistribuidor.Text := cdsPrecoDIST_NOME.AsString;
+      edtPreco.Text            := cdsPrecoPRPE_PRECO.AsString; //formatfloat(',0.00', strtofloat(cdsLimiteLICR_VALOR_LIMITE.AsString));
+      edtCNPJDistribuidor.Text := cdsPrecoDIST_CNPJ.AsString;
+    end;
+  end;
+
+end;
+
+procedure TFRM_Produto.edtPrecoExit(Sender: TObject);
+begin
+  if edtPreco.Text = '' then
+    edtPreco.Text := '0.00';
+end;
+
+procedure TFRM_Produto.edtPrecoKeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (key in ['0'..'9', '.',#8, #13]) then
+    key := #0;
 end;
 
 procedure TFRM_Produto.FormShow(Sender: TObject);
@@ -200,6 +231,11 @@ begin
     DM_PRINCIPAL.sqlAux.CommandText := 'DELETE FROM PSCN_PRODUTO_PRECO WHERE PRPE_CODIGO = ' + cdsPrecoPRPE_CODIGO.AsString;
     DM_PRINCIPAL.sqlAux.ExecSQL;
     CarregaDadosPreco;
+    edtCNPJDistribuidor.clear;
+    edtNomeDistribuidor.Clear;
+    edtCodPreco.Clear;
+    edtCodDistribuidor.Clear;
+    edtPreco.Clear;
   end;
 end;
 
@@ -305,6 +341,7 @@ end;
 procedure TFRM_Produto.spbSalvarClick(Sender: TObject);
 var
   iCodigo : String;
+  iCodigoPreco : Integer;
   tTrans: TTransactionDesc;
 begin
   try
@@ -325,31 +362,34 @@ begin
     cdsProdutoPROD_NOME.AsString     := edtNome.Text;
     cdsProduto.Post;
     cdsProduto.ApplyUpdates(-1);
-
-    if bEditar then
-    begin
-      if cdsPreco.RecordCount > 0 then
-      begin
-        DM_PRINCIPAL.sqlAux.Close;
-        DM_PRINCIPAL.sqlAux.SQL.Text := 'SELECT PRPE_CODIGO FROM PSCN_PRODUTO_PRECO WHERE PROD_CODIGO = ' + edtCodigo.Text;
-        DM_PRINCIPAL.sqlAux.Open;
-        cdsPreco.First;
-        while not cdsPreco.Eof do
-        begin
-          if DM_PRINCIPAL.sqlAux.Locate('PRPE_CODIGO', cdsPrecoPRPE_CODIGO.AsString, [loCaseInsensitive]) then
-            DM_PRINCIPAL.GravaDados(cdsPreco,'PSCN_LIMITE_CREDITO',cdsPrecoPRPE_CODIGO.AsString,'A')
-          else
-            DM_PRINCIPAL.GravaDados(cdsPreco,'PSCN_LIMITE_CREDITO',cdsPrecoPRPE_CODIGO.AsString,'I');
-          cdsPreco.Next;
-        end;
-      end;
-    end;
     DM_PRINCIPAL.DBEConexao.Commit(tTrans);
     except on E: Exception do
     begin
       {Erro da transação}
       DM_PRINCIPAL.DBEConexao.Rollback(tTrans);
       MessageDlg(Format('Erro ao  salvar. %s',[e.message]) , mtinformation, [mbok], 0);
+    end;
+  end;
+
+  if bEditar then
+  begin
+    if cdsPreco.RecordCount > 0 then
+    begin
+      DM_PRINCIPAL.sqlAux.Close;
+      DM_PRINCIPAL.sqlAux.SQL.Text := 'SELECT PRPE_CODIGO, PROD_CODIGO, DIST_CODIGO FROM PSCN_PRODUTO_PRECO WHERE PROD_CODIGO = ' + edtCodigo.Text;
+      DM_PRINCIPAL.sqlAux.Open;
+      cdsPreco.First;
+      while not cdsPreco.Eof do
+      begin
+        if DM_PRINCIPAL.sqlAux.Locate('PROD_CODIGO;DIST_CODIGO', VarArrayOf([cdsPrecoPROD_CODIGO.AsString,cdsPrecoDIST_CODIGO.AsString]), [loCaseInsensitive]) then
+          DM_PRINCIPAL.GravaDados(cdsPreco,'PSCN_PRODUTO_PRECO',cdsPrecoPRPE_CODIGO.AsString,'A')
+        else
+        begin
+          iCodigoPreco := DM_PRINCIPAL.GeraCodigo('PSCN_PRODUTO_PRECO','PRPE_CODIGO');
+          DM_PRINCIPAL.GravaDados(cdsPreco,'PSCN_PRODUTO_PRECO',IntToStr(iCodigoPreco),'I');
+        end;
+        cdsPreco.Next;
+      end;
     end;
   end;
 

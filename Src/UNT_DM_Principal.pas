@@ -23,6 +23,18 @@ type
     sqlDistribuidor: TSQLQuery;
     sqlProduto: TSQLQuery;
     sqlPreco: TSQLQuery;
+    sqlGeraCodigo: TSQLQuery;
+    sqlNegociacao: TSQLQuery;
+    sqlItensNegociacao: TSQLQuery;
+    sqlNegociacaoNEGO_CODIGO: TIntegerField;
+    sqlNegociacaoNEGO_DATA_CADASTRO: TDateField;
+    sqlNegociacaoNEGO_DATA_PENDENTE: TDateField;
+    sqlNegociacaoPROR_CODIGO: TIntegerField;
+    sqlNegociacaoDIST_CODIGO: TIntegerField;
+    sqlNegociacaoNEGO_STATUS: TStringField;
+    sqlNegociacaoNEGO_TOTAL: TFMTBCDField;
+    sqlNegociacaoPROR_NOME: TStringField;
+    sqlNegociacaoDIST_NOME: TStringField;
   private
     { Private declarations }
     dbxTrans: TTransactionDesc;
@@ -56,16 +68,16 @@ Const
 
 function TDM_PRINCIPAL.GeraCodigo(sTabela, sCampo: String): Integer;
 begin
-  sqlAux.Close;
-  sqlAux.CommandText := 'SELECT MAX('+sCampo+') +1 FROM ' + sTabela;
-  sqlAux.Open;
+  sqlGeraCodigo.Close;
+  sqlGeraCodigo.CommandText := 'SELECT MAX('+sCampo+') +1 FROM ' + sTabela;
+  sqlGeraCodigo.Open;
 
-  if (sqlAux.IsEmpty) or (sqlAux.Fields[0].IsNull) then
+  if (sqlGeraCodigo.IsEmpty) or (sqlGeraCodigo.Fields[0].IsNull) then
   begin
     Result := 1
   end else
   begin
-    Result := sqlAux.Fields[0].Value;
+    Result := sqlGeraCodigo.Fields[0].Value;
   end;
 
 end;
@@ -141,13 +153,19 @@ begin
         else
           sCampos := sCampos + ' , '+  cdsTabela.Fields.Fields[i].FieldName ;
 
-
         if sValue = '' then
-          sValue :=  cdsTabela.Fields.Fields[i].AsString
+          if cdsTabela.Fields.Fields[i].Tag = 1 then
+            svalue := key[0]
+          else
+            sValue := cdsTabela.Fields.Fields[i].AsString
         else
         begin
+          if cdsTabela.Fields.Fields[i].Tag = 1 then
+            svalue := sValue + ', '+ key[0]
+          else
           if cdsTabela.Fields.Fields[i].IsNull then
-            sValue := sValue + ', null '  ;
+            sValue := sValue + ', null '
+          else
           if cdsTabela.Fields.Fields[i].DataType in [ftString, ftWideString] then
           begin
             sTexto := cdsTabela.Fields.Fields[i].AsString;
@@ -159,9 +177,9 @@ begin
           else if cdsTabela.Fields.Fields[i].DataType in [ftDateTime, ftDate, ftTimeStamp] then
           begin
             if length(cdsTabela.Fields.Fields[i].AsString) > 10 then
-              sValue := sValue + quotedstr(formatDateTime('mm/dd/yyyy hh:nn:ss', cdsTabela.Fields.Fields[i].asDateTime)) + ','
+              sValue := sValue +','+ quotedstr(formatDateTime('mm/dd/yyyy hh:nn:ss', cdsTabela.Fields.Fields[i].asDateTime))
             else
-              sValue := sValue + quotedstr(formatDateTime('mm/dd/yyyy', cdsTabela.Fields.Fields[i].asDateTime)) + ',';
+              sValue := sValue +','+ quotedstr(formatDateTime('mm/dd/yyyy', cdsTabela.Fields.Fields[i].asDateTime)) ;
           end
           else
             sValue := sValue + ', ' + cdsTabela.Fields.Fields[i].AsString ;

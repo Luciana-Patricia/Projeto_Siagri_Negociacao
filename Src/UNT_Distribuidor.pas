@@ -86,7 +86,19 @@ begin
   begin
     MessageDlg('CNPJ inválido.',mtError, [mbOK],0);
     edtCNPJ.SetFocus;
-  end
+    exit;
+  end;
+  if (not bEditar) then
+  begin
+    FRM_Pesquisa.PesquisaGeral('D', 'CNPJ', edtCNPJ.Text);
+    if FRM_Pesquisa.cdsPesquisa.RecordCount > 0 then
+    begin
+      MessageDlg('Esse CNPJ já está cadastrado para outro distribuidor.',mtInformation, [mbOK],0);
+      edtCNPJ.SetFocus;
+    end;
+  end;
+
+
 end;
 
 procedure TFRM_Distribuidor.edtCNPJKeyPress(Sender: TObject; var Key: Char);

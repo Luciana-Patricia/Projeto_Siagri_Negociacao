@@ -300,6 +300,12 @@ begin
     DM_PRINCIPAL.sqlAux.CommandText := 'DELETE FROM PSCN_LIMITE_CREDITO WHERE LICR_CODIGO = ' + cdsLimiteLICR_CODIGO.AsString;
     DM_PRINCIPAL.sqlAux.ExecSQL;
     CarregaDadosLimite;
+    edtCodDistribuidor.Clear;
+    edtCodLimite.Clear;
+    edtCNPJDistribuidor.Clear;
+    edtNomeDistribuidor.Clear;
+    edtLimite.Clear;
+
   end;
 end;
 
@@ -401,6 +407,7 @@ end;
 procedure TFRM_Produtor.spbSalvarClick(Sender: TObject);
 var
   iCodigo : String;
+  iCodigoLimite : Integer;
   tTrans: TTransactionDesc;
 begin
   try
@@ -423,31 +430,34 @@ begin
     cdsProdutorPROR_NOME.AsString     := edtNome.Text;
     cdsProdutor.Post;
     cdsProdutor.ApplyUpdates(-1);
-
-    if bEditar then
-    begin
-      if cdsLimite.RecordCount > 0 then
-      begin
-        DM_PRINCIPAL.sqlAux.Close;
-        DM_PRINCIPAL.sqlAux.SQL.Text := 'SELECT LICR_CODIGO FROM PSCN_LIMITE_CREDITO WHERE PROR_CODIGO = ' + edtCodigo.Text;
-        DM_PRINCIPAL.sqlAux.Open;
-        cdsLimite.First;
-        while not cdsLimite.Eof do
-        begin
-          if DM_PRINCIPAL.sqlAux.Locate('LICR_CODIGO', cdsLimiteLICR_CODIGO.AsString, [loCaseInsensitive]) then
-            DM_PRINCIPAL.GravaDados(cdsLimite,'PSCN_LIMITE_CREDITO',cdsLimiteLICR_CODIGO.AsString,'A')
-          else
-            DM_PRINCIPAL.GravaDados(cdsLimite,'PSCN_LIMITE_CREDITO',cdsLimiteLICR_CODIGO.AsString,'I');
-          cdsLimite.Next;
-        end;
-      end;
-    end;
     DM_PRINCIPAL.DBEConexao.Commit(tTrans);
     except on E: Exception do
     begin
       {Erro da transação}
       DM_PRINCIPAL.DBEConexao.Rollback(tTrans);
       MessageDlg(Format('Erro ao  salvar. %s',[e.message]) , mtinformation, [mbok], 0);
+    end;
+  end;
+
+  if bEditar then
+  begin
+    if cdsLimite.RecordCount > 0 then
+    begin
+      DM_PRINCIPAL.sqlAux.Close;
+      DM_PRINCIPAL.sqlAux.SQL.Text := 'SELECT LICR_CODIGO, PROR_CODIGO, DIST_CODIGO FROM PSCN_LIMITE_CREDITO WHERE PROR_CODIGO = ' + edtCodigo.Text;
+      DM_PRINCIPAL.sqlAux.Open;
+      cdsLimite.First;
+      while not cdsLimite.Eof do
+      begin
+        if DM_PRINCIPAL.sqlAux.Locate('PROR_CODIGO;DIST_CODIGO', VarArrayOf([cdsLimitePROR_CODIGO.AsString,cdsLimiteDIST_CODIGO.AsString]), [loCaseInsensitive]) then
+          DM_PRINCIPAL.GravaDados(cdsLimite,'PSCN_LIMITE_CREDITO',cdsLimiteLICR_CODIGO.AsString,'A')
+        else
+        begin
+          iCodigoLimite := DM_PRINCIPAL.GeraCodigo('PSCN_LIMITE_CREDITO','LICR_CODIGO');
+          DM_PRINCIPAL.GravaDados(cdsLimite,'PSCN_LIMITE_CREDITO',IntToStr(iCodigoLimite),'I');
+        end;
+        cdsLimite.Next;
+      end;
     end;
   end;
 

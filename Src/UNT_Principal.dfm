@@ -422,6 +422,7 @@ object frm_Principal: Tfrm_Principal
       Caption = 'Manuten'#231#227'o'
       object Negociao1: TMenuItem
         Caption = '&Negocia'#231#227'o'
+        OnClick = Negociao1Click
       end
     end
   end

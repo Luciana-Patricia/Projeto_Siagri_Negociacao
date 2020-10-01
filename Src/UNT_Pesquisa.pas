@@ -108,12 +108,24 @@ end;
 
 procedure TFRM_Pesquisa.IWFrame21spbCodigoClick(Sender: TObject);
 begin
-  Pesquisa('codigo',IWFrame21.edtCodigo.Text);
+  if (IWFrame21.edtCodigo.Text = '') then
+  begin
+    cdsPesquisa.Filter   := '';
+    cdsPesquisa.Filtered := false;
+    cdsPesquisa.Filtered := True;
+  end else
+    Pesquisa('codigo',IWFrame21.edtCodigo.Text);
 end;
 
 procedure TFRM_Pesquisa.IWFrame21spbNomeClick(Sender: TObject);
 begin
-  Pesquisa('Nome',IWFrame21.edtNome.Text);
+  if (IWFrame21.edtNome.Text = '') then
+  begin
+    cdsPesquisa.Filter   := '';
+    cdsPesquisa.Filtered := false;
+    cdsPesquisa.Filtered := True;
+  end else
+    Pesquisa('Nome',IWFrame21.edtNome.Text);
 end;
 
 procedure TFRM_Pesquisa.Pesquisa(Campo, Valor: String);

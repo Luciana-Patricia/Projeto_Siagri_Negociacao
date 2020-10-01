@@ -580,7 +580,7 @@ object FRM_Negociacao: TFRM_Negociacao
     Top = 35
     Width = 467
     Height = 267
-    ActivePage = tsDados
+    ActivePage = tsItensNegociacao
     Align = alClient
     TabOrder = 2
     OnChange = PageControl1Change

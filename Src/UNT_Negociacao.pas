@@ -447,7 +447,6 @@ begin
   spbCancelar.Enabled             := True;
   spbExcluir.Enabled              := False;
   spbSair.Enabled                 := False;
-  bEditar                         := True;
   pnlDados.Enabled                := True;
   tsItensNegociacao.Visible       := True;
   pnlDadosItensNegociacao.Enabled := True;
@@ -588,15 +587,15 @@ end;
 
 procedure TFRM_Negociacao.spbPesquisarClick(Sender: TObject);
 begin
-  spbNovo.Enabled := False;
-  spbPesquisar.Enabled := False;
-  spbEditar.Enabled := True;
-  spbSalvar.Enabled := False;
-  spbCancelar.Enabled := True;
-  spbExcluir.Enabled := True;
-  spbSair.Enabled := False;
-  bEditar := False;
-  pnlDados.Enabled := False;
+  spbNovo.Enabled                 := False;
+  spbPesquisar.Enabled            := False;
+  spbEditar.Enabled               := True;
+  spbSalvar.Enabled               := False;
+  spbCancelar.Enabled             := True;
+  spbExcluir.Enabled              := True;
+  spbSair.Enabled                 := False;
+  bEditar                         := True;
+  pnlDados.Enabled                := False;
   pnlDadosItensNegociacao.Enabled := False;
 
   FRM_Pesquisa.PesquisaGeral('N');

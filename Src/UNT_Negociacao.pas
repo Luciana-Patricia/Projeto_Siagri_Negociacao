@@ -83,9 +83,17 @@ type
     cdsNegociacaoNEGO_DATA_PENDENTE: TDateField;
     cdsNegociacaoPROR_CODIGO: TIntegerField;
     cdsNegociacaoDIST_CODIGO: TIntegerField;
-    cdsNegociacaoNEGO_STATUS: TStringField;
     cdsNegociacaoNEGO_TOTAL: TFMTBCDField;
     cdsNegociacaoStatusDelta: TStringField;
+    edtCodigoPreco: TEdit;
+    spbAprovarNegociacao: TSpeedButton;
+    spbCancelarNegociacao: TSpeedButton;
+    cdsNegociacaoNEGO_STATUS: TStringField;
+    cdsNegociacaoPROR_NOME: TStringField;
+    cdsNegociacaoDIST_NOME: TStringField;
+    cdsNegociacaoNEGO_DATA_APROVACAO: TDateField;
+    cdsNegociacaoNEGO_DATA_CONCLUIDA: TDateField;
+    cdsNegociacaoNEGO_DATA_CANCELADA: TDateField;
     procedure spbNovoClick(Sender: TObject);
     procedure spbPesquisarClick(Sender: TObject);
     procedure spbEditarClick(Sender: TObject);
@@ -99,6 +107,10 @@ type
     procedure spbPesqDistClick(Sender: TObject);
     procedure spbSalvarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure dbgridItensNegociacaoDblClick(Sender: TObject);
+    procedure spbAprovarNegociacaoClick(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
+    procedure spbCancelarNegociacaoClick(Sender: TObject);
   private
     { Private declarations }
     bEditar: Boolean;
@@ -134,7 +146,7 @@ begin
     begin
       edtLimite.Text := sqlLimiteLIMITE.AsString;
       edtLimiteDisponivel.Text := sqlLimiteLIMITE_DISPONIVEL.AsString;
-      spbSalvar.Enabled := True;
+      //spbSalvar.Enabled := True;
     end
     else
     begin
@@ -159,7 +171,11 @@ begin
     '    N.NEGO_STATUS,                           ' + sLineBreak +
     '    N.NEGO_TOTAL,                            ' + sLineBreak +
     '    P.PROR_NOME,                             ' + sLineBreak +
-    '    D.DIST_NOME                              ' + sLineBreak +
+    '    D.DIST_NOME,                             ' + sLineBreak +
+    '    N.NEGO_DATA_APROVACAO,                   ' + sLineBreak +
+    '    N.NEGO_DATA_CONCLUIDA,                   ' + sLineBreak +
+    '    N.NEGO_DATA_CANCELADA                    ' + sLineBreak +
+
     'FROM                                         ' + sLineBreak +
     '    PSCN_NEGOCIACAO N                        ' + sLineBreak +
     '        INNER JOIN PSCN_PRODUTOR P           ' + sLineBreak +
@@ -177,8 +193,7 @@ begin
   if not FRM_Pesquisa.cdsPesquisa.IsEmpty then
   begin
     edtCPFProdutor.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('CPF').AsString;
-    edtNomeProdutor.Text := FRM_Pesquisa.cdsPesquisa.FieldByName
-      ('Nome').AsString;
+    edtNomeProdutor.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('Nome').AsString;
   end;
 
   edtCodDist.Text := cdsNegociacaoDIST_CODIGO.AsString;
@@ -186,16 +201,21 @@ begin
   if not FRM_Pesquisa.cdsPesquisa.IsEmpty then
   begin
     edtCNPJDist.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('CNPJ').AsString;
-    edtNomeProdutor.Text := FRM_Pesquisa.cdsPesquisa.FieldByName
-      ('Nome').AsString;
+    edtNomeDist.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('Nome').AsString;
   end;
 
-  edtStatus.Text := cdsNegociacaoNEGO_STATUS.AsString;
+  edtStatus.Text       := cdsNegociacaoNEGO_STATUS.AsString;
   dtpDataCadastro.Date := cdsNegociacaoNEGO_DATA_CADASTRO.AsDateTime;
-  edtTotalItens.Text := cdsNegociacaoNEGO_TOTAL.AsString;
+  edtTotalItens.Text   := cdsNegociacaoNEGO_TOTAL.AsString;
   AtualizaCredito;
   CarregaDadosItens;
 
+  spbAprovarNegociacao.Visible    := (edtStatus.Text = 'PENDENTE') or (edtStatus.Text = 'APROVADA');
+  spbCancelarNegociacao.Visible   := spbAprovarNegociacao.Visible;
+  spbCancelarNegociacao.Left      := spbAprovarNegociacao.Left + spbAprovarNegociacao.Width;
+  spbCancelarNegociacao.Height    := spbAprovarNegociacao.Height;
+  spbCancelarNegociacao.Top       := spbAprovarNegociacao.Top;
+  spbEditar.Enabled               := (edtStatus.Text = 'PENDENTE');
   PageControl1.ActivePage := tsDados;
 
 end;
@@ -205,13 +225,17 @@ begin
   cdsItensNegociacao.Close;
   DM_PRINCIPAL.sqlItensNegociacao.Close;
   DM_PRINCIPAL.sqlItensNegociacao.SQL.Clear;
-  DM_PRINCIPAL.sqlItensNegociacao.SQL.Text := 'SELECT                ' +
-    sLineBreak + '    I.ITNE_CODIGO,    ' + sLineBreak +
-    '    I.NEGO_CODIGO,    ' + sLineBreak + '    I.PRPE_CODIGO,    ' +
-    sLineBreak + '    PP.PROD_CODIGO,   ' + sLineBreak +
-    '    PP.DIST_CODIGO,   ' + sLineBreak + '    PP.PRPE_PRECO     ' +
-    sLineBreak + 'FROM                  ' + sLineBreak +
-    '    PSCN_ITENS_NEGOCIACAO I ' + sLineBreak +
+  DM_PRINCIPAL.sqlItensNegociacao.SQL.Text :=
+    'SELECT                ' + sLineBreak +
+    '    I.ITNE_CODIGO,    ' + sLineBreak +
+    '    I.NEGO_CODIGO,    ' + sLineBreak +
+    '    I.PRPE_CODIGO,    ' + sLineBreak +
+    '    PP.PROD_CODIGO,   ' + sLineBreak +
+    '    P.PROD_NOME,      ' + sLineBreak +
+    '    PP.DIST_CODIGO,   ' + sLineBreak +
+    '    PP.PRPE_PRECO     ' + sLineBreak +
+    'FROM                  ' + sLineBreak +
+    '    PSCN_ITENS_NEGOCIACAO I                       ' + sLineBreak +
     '        INNER JOIN PSCN_PRODUTO_PRECO PP          ' + sLineBreak +
     '            ON I.PRPE_CODIGO = PP.PRPE_CODIGO     ' + sLineBreak +
     '        INNER JOIN PSCN_PRODUTO P                 ' + sLineBreak +
@@ -220,12 +244,30 @@ begin
     '    I.NEGO_CODIGO = ' + edtCodigo.Text;
   DM_PRINCIPAL.sqlItensNegociacao.Open;
   cdsItensNegociacao.Active := True;
-  edtTotalItens.Text := cdsItensNegociacaoTotal_Itens.AsString;
+  if cdsItensNegociacaoTotal_Itens.AsString = '' then
+    edtTotalItens.Text := '0.00'
+  else
+    edtTotalItens.Text := cdsItensNegociacaoTotal_Itens.AsString;
 end;
 
 procedure TFRM_Negociacao.CarregaLimite;
 begin
 
+end;
+
+procedure TFRM_Negociacao.dbgridItensNegociacaoDblClick(Sender: TObject);
+begin
+  if cdsItensNegociacao.Active then
+  begin
+    if cdsItensNegociacaoITNE_CODIGO.Value > 0  then
+    begin
+      edtCodItensNegociacao.Text  := cdsItensNegociacaoITNE_CODIGO.AsString;
+      edtCodigoPreco.Text         := cdsItensNegociacaoPRPE_CODIGO.AsString;
+      edtPreco.Text               := cdsItensNegociacaoPRPE_PRECO.AsString; //formatfloat(',0.00', strtofloat(cdsLimiteLICR_VALOR_LIMITE.AsString));
+      edtCodProduto.Text          := cdsItensNegociacaoPROD_CODIGO.AsString;
+      edtNomeProduto.Text         := cdsItensNegociacaoPROD_NOME.AsString;
+    end;
+  end;
 end;
 
 procedure TFRM_Negociacao.FormShow(Sender: TObject);
@@ -242,6 +284,7 @@ begin
   tsItensNegociacao.Visible       := False;
   pnlDadosItensNegociacao.Enabled := false;
   PageControl1.ActivePage         := tsDados;
+
   LimparDados;
 
 end;
@@ -250,6 +293,7 @@ procedure TFRM_Negociacao.LimparDados;
 begin
   edtCodigo.Clear;
   edtCodProdutor.Clear;
+  edtCodigoPreco.Clear;
   edtCPFProdutor.Clear;
   edtNomeProdutor.Clear;
   edtCodDist.Clear;
@@ -267,7 +311,69 @@ begin
   pnlDados.Enabled := False;
   pnlDadosItensNegociacao.Enabled;
   PageControl1.ActivePage := tsDados;
+  spbAprovarNegociacao.Visible  := False;
+  spbCancelarNegociacao.Visible := False;
+end;
 
+procedure TFRM_Negociacao.PageControl1Change(Sender: TObject);
+begin
+  if (PageControl1.ActivePage = tsItensNegociacao) then
+    if not bEditar then
+    begin
+      MessageDlg('É necessário salvar a negociação para inserir os itens da negociação.', mtInformation, [mbOK],0);
+    end;
+
+end;
+
+procedure TFRM_Negociacao.spbAprovarNegociacaoClick(Sender: TObject);
+begin
+  if edtStatus.Text = 'PENDENTE' then
+  begin
+    if (edtTotalItens.Text = '') or (edtTotalItens.Text = '0.00') then
+    begin
+      MessageDlg('Negociação não possui itens. Negociação incompleta para ser aprovada.', mtInformation, [mbOK], 0);
+      spbAprovarNegociacao.Visible := False;
+      Exit;
+    end;
+    if MessageDlg('Deseja aprovar essa negociação? Essa operação é irreversível.', mtWarning ,[mbYes, mbNo], 0) = mrYes then
+    begin
+    if (edtTotalItens.Text <> '') then
+      if (StrToFloat(DM_PRINCIPAL.TrocaString(edtTotalItens.Text, ',','.')) > StrToFloat(DM_PRINCIPAL.TrocaString(edtLimiteDisponivel.Text, ',','.')))  then
+      begin
+        MessageDlg('Limite de crédito indisponível para aprovar a negociação.' + #13 + 'Não será possível prosseguir com a aprovação da negociação.' , mtInformation, [mbOK], 0);
+        Exit;
+      end;
+
+      DM_PRINCIPAL.sqlExecuta.Close;
+      DM_PRINCIPAL.sqlExecuta.SQL.Clear;
+      DM_PRINCIPAL.sqlExecuta.SQL.Text :=
+         'UPDATE PSCN_NEGOCIACAO SET             ' +
+         '    NEGO_STATUS = ''APROVADA'',        ' +
+         '    NEGO_DATA_APROVACAO = CURRENT_DATE ' +
+         'WHERE                                  ' +
+         '    NEGO_CODIGO = ' + edtCodigo.Text;
+      DM_PRINCIPAL.sqlExecuta.ExecSQL;
+      edtStatus.Text := 'APROVADA';
+      spbEditar.Enabled := False;
+    end;
+  end
+  else if edtStatus.Text = 'APROVADA' then
+  begin
+    if MessageDlg('Deseja concluir essa negociação? Essa operação é irreversível.', mtWarning ,[mbYes, mbNo], 0) = mrYes then
+    begin
+      DM_PRINCIPAL.sqlExecuta.Close;
+      DM_PRINCIPAL.sqlExecuta.SQL.Clear;
+      DM_PRINCIPAL.sqlExecuta.SQL.Text :=
+         'UPDATE PSCN_NEGOCIACAO SET             ' +
+         '    NEGO_STATUS = ''CONCLUIDA'',        ' +
+         '    NEGO_DATA_CONCLUIDA = CURRENT_DATE ' +
+         'WHERE                                  ' +
+         '    NEGO_CODIGO = ' + edtCodigo.Text;
+      DM_PRINCIPAL.sqlExecuta.ExecSQL;
+      edtStatus.Text := 'CONCLUIDA';
+      spbEditar.Enabled := False;
+    end;
+  end;
 end;
 
 procedure TFRM_Negociacao.spbCancelarClick(Sender: TObject);
@@ -290,6 +396,29 @@ begin
 
 end;
 
+procedure TFRM_Negociacao.spbCancelarNegociacaoClick(Sender: TObject);
+begin
+  if (edtStatus.Text = 'PENDENTE') or (edtStatus.Text = 'APROVADA') then
+  begin
+    if MessageDlg('Deseja cancelar essa negociação? Essa operação é irreversível.', mtWarning ,[mbYes, mbNo], 0) = mrYes then
+    begin
+      DM_PRINCIPAL.sqlExecuta.Close;
+      DM_PRINCIPAL.sqlExecuta.SQL.Clear;
+      DM_PRINCIPAL.sqlExecuta.SQL.Text :=
+         'UPDATE PSCN_NEGOCIACAO SET             ' +
+         '    NEGO_STATUS = ''CANCELADA'',        ' +
+         '    NEGO_DATA_CANCELADA = CURRENT_DATE ' +
+         'WHERE                                  ' +
+         '    NEGO_CODIGO = ' + edtCodigo.Text;
+      DM_PRINCIPAL.sqlExecuta.ExecSQL;
+      edtStatus.Text := 'CANCELADA';
+      spbEditar.Enabled := False;
+    end;
+  end
+  else if (edtStatus.Text = 'CONCLUIDA') then
+    MessageDlg('Não será possível cancelar uma negociação concluida.', mtInformation, [mbOK],0) ;
+end;
+
 procedure TFRM_Negociacao.spbDeletarItensClick(Sender: TObject);
 begin
   if edtCodProduto.Text = '' then
@@ -298,11 +427,11 @@ begin
   begin
     DM_PRINCIPAL.sqlAux.Close;
     DM_PRINCIPAL.sqlAux.CommandText :=
-      'DELETE FROM PSCN_ITENS_NEGOCIACAO WHERE ITNE_CODIGO = ' +
-      cdsItensNegociacaoITNE_CODIGO.AsString;
+      'DELETE FROM PSCN_ITENS_NEGOCIACAO WHERE ITNE_CODIGO = ' + cdsItensNegociacaoITNE_CODIGO.AsString;
     DM_PRINCIPAL.sqlAux.ExecSQL;
     CarregaDadosItens;
     edtCodProduto.Clear;
+    edtCodigoPreco.Clear;
     edtCodItensNegociacao.Clear;
     edtNomeProduto.Clear;
     edtPreco.Clear;
@@ -323,24 +452,21 @@ begin
   tsItensNegociacao.Visible       := True;
   pnlDadosItensNegociacao.Enabled := True;
   PageControl1.ActivePage         := tsDados;
-
+  spbAprovarNegociacao.Visible    := False;
+  spbCancelarNegociacao.Visible   := False;
 end;
 
 procedure TFRM_Negociacao.spbExcluirClick(Sender: TObject);
 begin
-  if MessageDlg('Tem certeza que deseja excluir a negociação ' + edtCodigo.Text
-    + '?', mtWarning, [mbYes, mbNo], 0) = mrYes then
+  if MessageDlg('Tem certeza que deseja excluir a negociação ' + edtCodigo.Text + '?', mtWarning, [mbYes, mbNo], 0) = mrYes then
   begin
     if cdsNegociacao.RecordCount > 0 then
     begin
       if MessageDlg
-        ('Essa operação irá excluir os itens da negociação. Deseja continuar?',
-        mtWarning, [mbYes, mbNo], 0) = mrYes then
+        ('Essa operação irá excluir os itens da negociação. Deseja continuar?', mtWarning, [mbYes, mbNo], 0) = mrYes then
       begin
         DM_PRINCIPAL.sqlAux.Close;
-        DM_PRINCIPAL.sqlAux.CommandText :=
-          'DELETE FROM PSCN_ITENS_NEGOCIACAO WHERE NEGO_CODIGO = ' +
-          cdsNegociacaoNEGO_CODIGO.AsString;
+        DM_PRINCIPAL.sqlAux.CommandText :=  'DELETE FROM PSCN_ITENS_NEGOCIACAO WHERE NEGO_CODIGO = ' +      cdsNegociacaoNEGO_CODIGO.AsString;
         DM_PRINCIPAL.sqlAux.ExecSQL;
       end
       else
@@ -392,7 +518,10 @@ begin
     '    N.NEGO_TOTAL,                            ' + sLineBreak +
     '    N.DIST_CODIGO,                           ' + sLineBreak +
     '    P.PROR_NOME,                             ' + sLineBreak +
-    '    D.DIST_NOME                              ' + sLineBreak +
+    '    D.DIST_NOME,                             ' + sLineBreak +
+    '    N.NEGO_DATA_APROVACAO,                   ' + sLineBreak +
+    '    N.NEGO_DATA_CONCLUIDA,                   ' + sLineBreak +
+    '    N.NEGO_DATA_CANCELADA                    ' + sLineBreak +
     'FROM                                         ' + sLineBreak +
     '    PSCN_NEGOCIACAO N                        ' + sLineBreak +
     '        INNER JOIN PSCN_PRODUTOR P           ' + sLineBreak +
@@ -427,15 +556,16 @@ end;
 
 procedure TFRM_Negociacao.spbPesqProdutoClick(Sender: TObject);
 begin
-  FRM_Pesquisa.PesquisaGeral('PP');
+  FRM_Pesquisa.PesquisaGeral('PP','Cod.Dist.',edtCodDist.Text);
   FRM_Pesquisa.ShowModal;
   if FRM_Pesquisa.Tag = 1 then
   begin
     if not FRM_Pesquisa.cdsPesquisa.IsEmpty then
     begin
-      edtCodProduto.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('"Cod.Prod."').AsString;
+      edtCodigoPreco.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('Codigo').AsString;
+      edtCodProduto.Text  := FRM_Pesquisa.cdsPesquisa.FieldByName('Cod.Prod.').AsString;
       edtNomeProduto.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('Nome').AsString;
-      edtPreco.Text := FRM_Pesquisa.cdsPesquisa.FieldByName('"Preço"').AsString;
+      edtPreco.Text       := FRM_Pesquisa.cdsPesquisa.FieldByName('Preço').AsString;
     end;
   end;
 end;
@@ -496,7 +626,7 @@ begin
     exit;
   end;
   if (edtTotalItens.Text <> '') then
-    if (StrToFloat(edtTotalItens.Text) > StrToFloat(edtLimiteDisponivel.Text))  then
+    if (StrToFloat(DM_PRINCIPAL.TrocaString(edtTotalItens.Text, ',','.')) > StrToFloat(DM_PRINCIPAL.TrocaString(edtLimiteDisponivel.Text, ',','.')))  then
     begin
       MessageDlg('O total dos itens da negociação ultrapassa o valor de crédito disponível para o cliente.' + #13 + 'Não será possível prosseguir com a negociação.' , mtInformation, [mbOK], 0);
       Exit;
@@ -520,14 +650,10 @@ begin
 
     iCodigo := cdsNegociacaoNEGO_CODIGO.AsString;
     cdsNegociacaoNEGO_DATA_PENDENTE.AsDateTime := cdsNegociacaoNEGO_DATA_CADASTRO.AsDateTime;
-    //cdsNegociacaoNEGO_STATUS.AsString := edtStatus.Text;
     cdsNegociacaoPROR_CODIGO.AsString := edtCodProdutor.Text;
     cdsNegociacaoDIST_CODIGO.AsString := edtCodDist.Text;
-    cdsNegociacaoNEGO_TOTAL.AsFloat   := strtoFloat(edtTotalItens.Text);
-   // cdsNegociacaoPROR_NOME.AsString   := edtNomeProdutor.Text;
-   // cdsNegociacaoDIST_NOME.AsString   := edtNomeDist.Text;
+    cdsNegociacaoNEGO_TOTAL.AsFloat   := strtoFloat(DM_PRINCIPAL.TrocaString(edtTotalItens.Text,',','.'));
     cdsNegociacao.Post;
-    //cdsNegociacao.ApplyUpdates(-1);
     if bEditar then
       DM_PRINCIPAL.GravaDados(cdsNegociacao,'PSCN_NEGOCIACAO',iCodigo,'A')
     else
@@ -546,7 +672,7 @@ begin
     if cdsItensNegociacao.RecordCount > 0 then
     begin
       DM_PRINCIPAL.sqlAux.Close;
-      DM_PRINCIPAL.sqlAux.SQL.Text := 'SELECT INTE_CODIGO, NEGO_CODIGO, PRPE_CODIGO FROM PSCN_ITENS_NEGOCIACAO WHERE NEGO_CODIGO = ' + edtCodigo.Text;
+      DM_PRINCIPAL.sqlAux.SQL.Text := 'SELECT ITNE_CODIGO, NEGO_CODIGO, PRPE_CODIGO FROM PSCN_ITENS_NEGOCIACAO WHERE NEGO_CODIGO = ' + edtCodigo.Text;
       DM_PRINCIPAL.sqlAux.Open;
       cdsItensNegociacao.First;
       while not cdsItensNegociacao.Eof do
@@ -555,7 +681,7 @@ begin
           DM_PRINCIPAL.GravaDados(cdsItensNegociacao,'PSCN_ITENS_NEGOCIACAO',cdsItensNegociacaoITNE_CODIGO.AsString,'A')
         else
         begin
-          iCodigoPreco := DM_PRINCIPAL.GeraCodigo('PSCN_ITENS_NEGOCIACAO','INTE_CODIGO');
+          iCodigoPreco := DM_PRINCIPAL.GeraCodigo('PSCN_ITENS_NEGOCIACAO','ITNE_CODIGO');
           DM_PRINCIPAL.GravaDados(cdsItensNegociacao,'PSCN_ITENS_NEGOCIACAO',IntToStr(iCodigoPreco),'I');
         end;
         cdsItensNegociacao.Next;
@@ -574,6 +700,8 @@ begin
   pnlDados.Enabled     := False;
   tsItensNegociacao.Visible         := True;
   pnlDadosItensNegociacao.Enabled   := False;
+  spbAprovarNegociacao.Visible      := False;
+  spbCancelarNegociacao.Visible     := False;
   PageControl1.ActivePage := tsDados;
 
   CarregaDados(iCodigo);
@@ -584,28 +712,28 @@ procedure TFRM_Negociacao.spIncluirProdutoClick(Sender: TObject);
 begin
   if edtCodProduto.Text = '' then
     exit;
-  if cdsItensNegociacao.Locate('PROD_CODIGO', edtCodProduto.Text,
-    [loCaseInsensitive]) then
+  if cdsItensNegociacao.Locate('PROD_CODIGO', edtCodProduto.Text,[loCaseInsensitive]) then
   begin
-    cdsItensNegociacao.Edit;
+    MessageDlg('Produto já informado.', mtInformation, [mbOK], 0);
+    Exit;
   end
   else
   begin
     cdsItensNegociacao.Append;
-    cdsItensNegociacaoITNE_CODIGO.AsInteger :=
-      DM_PRINCIPAL.GeraCodigo('PSCN_ITENS_NEGOCIACAO', 'ITNE_CODIGO');
+    cdsItensNegociacaoITNE_CODIGO.AsInteger := DM_PRINCIPAL.GeraCodigo('PSCN_ITENS_NEGOCIACAO', 'ITNE_CODIGO');
   end;
 
   cdsItensNegociacaoDIST_CODIGO.AsString := edtCodDist.Text;
   cdsItensNegociacaoNEGO_CODIGO.AsString := edtCodigo.Text;
   cdsItensNegociacaoPROD_CODIGO.AsString := edtCodProduto.Text;
-  cdsItensNegociacaoPROD_NOME.AsString := edtNomeProduto.Text;
-  cdsItensNegociacaoPRPE_PRECO.AsFloat := StrToFloat(edtPreco.Text);  // DM_PRINCIPAL.TextToCurr(edtLimite.Text);
-  cdsItensNegociacaoPROD_CODIGO.AsString := edtCodigo.Text;
+  cdsItensNegociacaoPRPE_CODIGO.AsString := edtCodigoPreco.Text;
+  cdsItensNegociacaoPROD_NOME.AsString   := edtNomeProduto.Text;
+  cdsItensNegociacaoPRPE_PRECO.AsFloat   := StrToFloat(edtPreco.Text);  // DM_PRINCIPAL.TextToCurr(edtLimite.Text);
   cdsItensNegociacao.Post;
 
   edtTotalItens.Text := cdsItensNegociacaoTotal_Itens.AsString;
   edtCodProduto.Clear;
+  edtCodigoPreco.Clear;
   edtCodItensNegociacao.Clear;
   edtNomeProduto.Clear;
   edtPreco.Clear;

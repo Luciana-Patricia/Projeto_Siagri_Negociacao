@@ -18,6 +18,8 @@ type
     Image1: TImage;
     StatusBarPrincipal: TStatusBar;
     Timer1: TTimer;
+    Relatrio1: TMenuItem;
+    Negociao2: TMenuItem;
     procedure Produtor1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -26,6 +28,7 @@ type
     procedure Distribuidor1Click(Sender: TObject);
     procedure Produto1Click(Sender: TObject);
     procedure Negociao1Click(Sender: TObject);
+    procedure Negociao2Click(Sender: TObject);
   private
     currCellCol, currCellRow: Integer;
   public
@@ -40,7 +43,7 @@ implementation
 {$R *.dfm}
 
 uses UNT_Produtor, UNT_DM_Principal, UNT_Pesquisa, UNT_Distribuidor,
-  UNT_Produto, UNT_Negociacao;
+  UNT_Produto, UNT_Negociacao, UNT_Relatório;
 
 
 procedure Tfrm_Principal.Distribuidor1Click(Sender: TObject);
@@ -74,6 +77,13 @@ begin
   if FRM_Negociacao = nil then
     Application.CreateForm(TFRM_Negociacao,FRM_Negociacao);
   FRM_Negociacao.ShowModal;
+end;
+
+procedure Tfrm_Principal.Negociao2Click(Sender: TObject);
+begin
+  if FRM_Relatorio = nil then
+    Application.CreateForm(TFRM_Relatorio,FRM_Relatorio);
+  FRM_Relatorio.ShowModal;
 end;
 
 procedure Tfrm_Principal.Produto1Click(Sender: TObject);

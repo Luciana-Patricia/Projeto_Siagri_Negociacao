@@ -147,6 +147,8 @@ object FRM_Distribuidor: TFRM_Distribuidor
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFDFDFDFCFCFCFBFBFBFCFCFCFCFC
           FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+        ParentShowHint = False
+        ShowHint = True
         OnClick = spbNovoClick
         ExplicitLeft = 0
         ExplicitTop = 0
@@ -304,6 +306,8 @@ object FRM_Distribuidor: TFRM_Distribuidor
           EEE4E0EEE7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFF0000}
+        ParentShowHint = False
+        ShowHint = True
         OnClick = spbPesquisarClick
         ExplicitLeft = 32
         ExplicitTop = 0

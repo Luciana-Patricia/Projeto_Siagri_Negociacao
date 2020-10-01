@@ -208,7 +208,10 @@ object DM_PRINCIPAL: TDM_PRINCIPAL
       '    N.NEGO_STATUS,'
       '    N.NEGO_TOTAL,'
       '    P.PROR_NOME,'
-      '    D.DIST_NOME'
+      '    D.DIST_NOME,'
+      '    N.NEGO_DATA_APROVACAO,'
+      '    N.NEGO_DATA_CONCLUIDA,'
+      '    N.NEGO_DATA_CANCELADA'
       'FROM'
       '    PSCN_NEGOCIACAO N'
       '        INNER JOIN PSCN_PRODUTOR P'
@@ -251,6 +254,15 @@ object DM_PRINCIPAL: TDM_PRINCIPAL
     object sqlNegociacaoDIST_NOME: TStringField
       FieldName = 'DIST_NOME'
       Size = 150
+    end
+    object sqlNegociacaoNEGO_DATA_APROVACAO: TDateField
+      FieldName = 'NEGO_DATA_APROVACAO'
+    end
+    object sqlNegociacaoNEGO_DATA_CONCLUIDA: TDateField
+      FieldName = 'NEGO_DATA_CONCLUIDA'
+    end
+    object sqlNegociacaoNEGO_DATA_CANCELADA: TDateField
+      FieldName = 'NEGO_DATA_CANCELADA'
     end
   end
   object sqlItensNegociacao: TSQLQuery

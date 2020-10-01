@@ -140,6 +140,8 @@ object FRM_Produto: TFRM_Produto
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFDFDFDFCFCFCFBFBFBFCFCFCFCFC
         FCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+      ParentShowHint = False
+      ShowHint = True
       OnClick = spbNovoClick
       ExplicitLeft = 0
       ExplicitTop = 0
@@ -297,6 +299,8 @@ object FRM_Produto: TFRM_Produto
         EEE4E0EEE7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFF0000}
+      ParentShowHint = False
+      ShowHint = True
       OnClick = spbPesquisarClick
       ExplicitLeft = 32
       ExplicitTop = 0
@@ -373,7 +377,7 @@ object FRM_Produto: TFRM_Produto
     Top = 35
     Width = 509
     Height = 171
-    ActivePage = tsPreco
+    ActivePage = tsDados
     Align = alClient
     TabOrder = 2
     object tsDados: TTabSheet

@@ -9,7 +9,8 @@ uses
   UNT_Pesquisa in 'UNT_Pesquisa.pas' {FRM_Pesquisa},
   UNT_Distribuidor in 'UNT_Distribuidor.pas' {FRM_Distribuidor},
   UNT_Produto in 'UNT_Produto.pas' {FRM_Produto},
-  UNT_Negociacao in 'UNT_Negociacao.pas' {FRM_Negociacao};
+  UNT_Negociacao in 'UNT_Negociacao.pas' {FRM_Negociacao},
+  UNT_Relatório in 'UNT_Relatório.pas' {FRM_Relatorio};
 
 {$R *.res}
 

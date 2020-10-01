@@ -35,6 +35,9 @@ type
     sqlNegociacaoNEGO_TOTAL: TFMTBCDField;
     sqlNegociacaoPROR_NOME: TStringField;
     sqlNegociacaoDIST_NOME: TStringField;
+    sqlNegociacaoNEGO_DATA_APROVACAO: TDateField;
+    sqlNegociacaoNEGO_DATA_CONCLUIDA: TDateField;
+    sqlNegociacaoNEGO_DATA_CANCELADA: TDateField;
   private
     { Private declarations }
     dbxTrans: TTransactionDesc;
@@ -128,12 +131,31 @@ begin
             sWhere :=  ' Where ' +  cdsTabela.Fields.Fields[i].FieldName + '=' + key[0]
           else
             sWhere := sWhere + 'and ' + cdsTabela.Fields.Fields[i].FieldName + '=' + key[1] ;
+
         if (cdsTabela.Fields.Fields[i].FieldName = 'StatusDelta') then Break;
+
         if sCampos = '' then
           sCampos := cdsTabela.Fields.Fields[i].FieldName + '=' +cdsTabela.Fields.Fields[i].AsString
         else
-          sCampos := sCampos + ' , '+  cdsTabela.Fields.Fields[i].FieldName + '=' +cdsTabela.Fields.Fields[i].AsString;
-
+        begin
+          if cdsTabela.Fields.Fields[i].DataType in [ftString, ftWideString] then
+          begin
+            sTexto := cdsTabela.Fields.Fields[i].AsString;
+            sTexto := TrocaString(sTexto, '"', '´´');
+            sTexto := TrocaString(sTexto, '''', '´');
+            sTexto := TrocaString(sTexto, '`', '´');
+            sCampos := sCampos + ', '+  cdsTabela.Fields.Fields[i].FieldName + '=' + quotedstr(sTexto) ;
+          end
+          else if cdsTabela.Fields.Fields[i].DataType in [ftDateTime, ftDate, ftTimeStamp] then
+          begin
+            if length(cdsTabela.Fields.Fields[i].AsString) > 10 then
+              sCampos := sCampos +',' +  cdsTabela.Fields.Fields[i].FieldName + '=' + quotedstr(formatDateTime('mm/dd/yyyy hh:nn:ss', cdsTabela.Fields.Fields[i].asDateTime))
+            else
+              sCampos := sCampos +',' +  cdsTabela.Fields.Fields[i].FieldName + '=' + quotedstr(formatDateTime('mm/dd/yyyy', cdsTabela.Fields.Fields[i].asDateTime)) ;
+          end
+          else
+            sCampos := sCampos + ' , '+  cdsTabela.Fields.Fields[i].FieldName + '=' +cdsTabela.Fields.Fields[i].AsString;
+        end;
       end;
       sqlExecuta.Close;
       sqlExecuta.SQL.Clear;

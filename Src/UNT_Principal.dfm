@@ -425,6 +425,13 @@ object frm_Principal: Tfrm_Principal
         OnClick = Negociao1Click
       end
     end
+    object Relatrio1: TMenuItem
+      Caption = 'Relat'#243'rio'
+      object Negociao2: TMenuItem
+        Caption = 'Negocia'#231#227'o'
+        OnClick = Negociao2Click
+      end
+    end
   end
   object Timer1: TTimer
     OnTimer = Timer1Timer
